@@ -1,24 +1,26 @@
 
-function Hole(jObj, isStore) {
+function Hole(jObj, stoneCount, isStore) {
     this.jObj = jObj;
+    this.stoneCount = stoneCount;
     this.isStore = (isStore !== undefined) ? isStore : false;
     this.nextHole = null;
 }
 
 const $playerHoles = $(".player-holes > .hole");
-const $cpuHoles = $(".cpu-holes > .hole");
-const $stores = $(".store > .hole");
+const $cpuHoles = $($(".cpu-holes > .hole").get().reverse());
+const $playerStore = $(".store > .hole").eq(1);
+const $cpuStore = $(".store > .hole").eq(0);
 const $message = $(".message");
+
 let canClick = true;
 const playerHoles = [];
 const cpuHoles = [];
-let playerStore = null;
-let cpuStore = null;
-const holes = [];
+
+const defaultStoneCount = 4;
 
 let prevHole = null;
 $playerHoles.each(function() {
-    const hole = new Hole($(this));
+    const hole = new Hole($(this), defaultStoneCount);
     if (prevHole !== null) {
         prevHole.nextHole = hole
     }
@@ -26,18 +28,18 @@ $playerHoles.each(function() {
     playerHoles.push(hole);
 });
 
-playerStore = new Hole($stores.eq(1), true);
+const playerStore = new Hole($playerStore, 0, true);
 prevHole.nextHole = playerStore;
 prevHole = playerStore;
 
-$($cpuHoles.get().reverse()).each(function() {
-    const hole = new Hole($(this));
+$cpuHoles.each(function() {
+    const hole = new Hole($(this), defaultStoneCount);
     prevHole.nextHole = hole;
     prevHole = hole;
     cpuHoles.push(hole);
 });
 
-cpuStore = new Hole($stores.eq(0), true);
+const cpuStore = new Hole($cpuStore, 0, true);
 prevHole.nextHole = cpuStore;
 cpuStore.nextHole = playerHoles[0];
 
@@ -48,8 +50,7 @@ $playerHoles.click(function() {
 
     const index = $playerHoles.index(this);
     let hole = playerHoles[index];
-    const stoneCount = Number(hole.jObj.text());
-    if (stoneCount === 0) return;
+    if (hole.stoneCount === 0) return;
 
     canClick = false;
 
@@ -75,12 +76,14 @@ $playerHoles.click(function() {
 });
 
 function stoneMove(hole) {
-    const stoneCount = Number(hole.jObj.text());
-    hole.jObj.text(0);
+    const stoneCount = hole.stoneCount;
+    hole.stoneCount = 0;
+    if (hole.jObj !== null) hole.jObj.text(hole.stoneCount);
     hole = hole.nextHole;
     let canPlayAgain = false;
     for (let i = 0; i < stoneCount; i++) {
-        hole.jObj.text(Number(hole.jObj.text()) + 1);
+        hole.stoneCount += 1;
+        if (hole.jObj !== null) hole.jObj.text(hole.stoneCount);
         canPlayAgain = hole.isStore;
         hole = hole.nextHole;
     }
@@ -89,7 +92,7 @@ function stoneMove(hole) {
 
 function isWin(holes) {
     for (let i = 0; i < holes.length; i++) {
-        if (Number(holes[i].jObj.text()) !== 0) {
+        if (holes[i].stoneCount !== 0) {
             return false;
         }
     }
@@ -105,7 +108,7 @@ function cpuPlay() {
     hole.jObj.css("background-color", "yellow");
 
     const canPlayAgain = stoneMove(hole);
-
+    
     if (isWin(cpuHoles)) {
         $message.text("あなたの負けです。");
         return;
@@ -122,13 +125,52 @@ function cpuPlay() {
     }
 }
 
+// ---
+
+// jObjはコピーしない。cpuThink用
+function copyHoles(srcPlayerHoles, srcCpuHoles) {
+    const dstPlayerHoles = [];
+    const dstCpuHoles = [];
+
+    let prevDstHole = null;
+    for (let i = 0; i < srcPlayerHoles.length; i++) {
+        let srcHole = srcPlayerHoles[i];
+        let dstHole = new Hole(null, srcHole.stoneCount);
+        if (prevDstHole !== null) {
+            prevDstHole.nextHole = dstHole;
+        }
+        prevDstHole = dstHole;
+        dstPlayerHoles.push(dstHole);
+    }
+    
+    let dstPlayerStore = new Hole(null, 0, true);
+    prevDstHole.nextHole = dstPlayerStore;
+    prevDstHole = dstPlayerStore;
+
+    for (let i = 0; i < srcCpuHoles.length; i++) {
+        let srcHole = srcCpuHoles[i];
+        let dstHole = new Hole(null, srcHole.stoneCount);
+        prevDstHole.nextHole = dstHole;
+        prevDstHole = dstHole;
+        dstPlayerHoles.push(dstHole);
+    }
+
+    let dstCpuStore = new Hole(null, 0, true);
+    prevDstHole.nextHole = dstCpuStore;
+    dstCpuStore.nextHole = dstPlayerHoles[0];
+
+    return {
+        playerHoles: playerHoles,
+        cpuHoles: cpuHoles
+    };
+}
+
 function cpuThink() {
     let index = Math.floor(Math.random() * 6);
 
     for (let i = 0; i < 6; i++) {
         let hole = cpuHoles[index];
-        const stoneCount = Number(hole.jObj.text());
-        if (stoneCount !== 0) {
+        if (hole.stoneCount !== 0) {
             return index;
         }
         else {
