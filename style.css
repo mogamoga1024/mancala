@@ -68,3 +68,6 @@
     box-sizing: border-box;
 }
 
+.player-holes > .hole {
+    cursor: pointer;
+}
