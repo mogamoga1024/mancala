@@ -56,14 +56,7 @@ $playerHoles.click(function() {
     $playerHoles.css("background-color", "");
     hole.jObj.css("background-color", "yellow");
 
-    hole.jObj.text(0);
-    hole = hole.nextHole;
-    let canPlayAgain = false;
-    for (let i = 0; i < stoneCount; i++) {
-        hole.jObj.text(Number(hole.jObj.text()) + 1);
-        canPlayAgain = hole.isStore;
-        hole = hole.nextHole;
-    }
+    const canPlayAgain = stoneMove(hole);
 
     if (isWin(playerHoles)) {
         $message.text("あなたの勝ちです。");
@@ -80,6 +73,19 @@ $playerHoles.click(function() {
         return;
     }
 });
+
+function stoneMove(hole) {
+    const stoneCount = Number(hole.jObj.text());
+    hole.jObj.text(0);
+    hole = hole.nextHole;
+    let canPlayAgain = false;
+    for (let i = 0; i < stoneCount; i++) {
+        hole.jObj.text(Number(hole.jObj.text()) + 1);
+        canPlayAgain = hole.isStore;
+        hole = hole.nextHole;
+    }
+    return canPlayAgain;
+}
 
 function isWin(holes) {
     for (let i = 0; i < holes.length; i++) {
@@ -100,14 +106,7 @@ function cpuPlay() {
 
     const stoneCount = Number(hole.jObj.text());
 
-    hole.jObj.text(0);
-    hole = hole.nextHole;
-    let canPlayAgain = false;
-    for (let i = 0; i < stoneCount; i++) {
-        hole.jObj.text(Number(hole.jObj.text()) + 1);
-        canPlayAgain = hole.isStore;
-        hole = hole.nextHole;
-    }
+    const canPlayAgain = stoneMove(hole);
 
     if (isWin(cpuHoles)) {
         $message.text("あなたの負けです。");
