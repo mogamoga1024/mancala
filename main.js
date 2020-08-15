@@ -104,8 +104,6 @@ function cpuPlay() {
     $cpuHoles.css("background-color", "");
     hole.jObj.css("background-color", "yellow");
 
-    const stoneCount = Number(hole.jObj.text());
-
     const canPlayAgain = stoneMove(hole);
 
     if (isWin(cpuHoles)) {
