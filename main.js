@@ -4,6 +4,9 @@ function Hole(jObj, nextHole) {
     this.nextHole = nextHole;
 }
 
+const $playerHoles = $(".player-holes > .hole");
+const $cpuHoles = $(".cpu-holes > .hole");
+const $stores = $(".store > .hole");
 const playerHoles = [];
 const cpuHoles = [];
 let playerStore = new Hole(null, null);
@@ -11,7 +14,7 @@ let cpuStore = new Hole(null, null);
 const holes = [];
 
 let prevHole = null;
-$(".player-holes > .hole").each(function() {
+$playerHoles.each(function() {
     const hole = new Hole($(this), null);
     if (prevHole !== null) {
         prevHole.nextHole = hole
@@ -21,13 +24,13 @@ $(".player-holes > .hole").each(function() {
 });
 
 playerStore = new Hole(
-    $(".store > .hole").eq(1),
+    $stores.eq(1),
     null
 );
 prevHole.nextHole = playerStore;
 prevHole = playerStore;
 
-$($(".cpu-holes > .hole").get().reverse()).each(function() {
+$($cpuHoles.get().reverse()).each(function() {
     const hole = new Hole($(this), null);
     prevHole.nextHole = hole;
     prevHole = hole;
@@ -35,7 +38,7 @@ $($(".cpu-holes > .hole").get().reverse()).each(function() {
 });
 
 cpuStore = new Hole(
-    $(".store > .hole").eq(0),
+    $stores.eq(0),
     null
 );
 prevHole.nextHole = cpuStore;
@@ -43,11 +46,14 @@ cpuStore.nextHole = playerHoles[0];
 
 // ---
 
-$(".player-holes > .hole").click(function() {
-    const index = $(".player-holes > .hole").index(this);
+$playerHoles.click(function() {
+    const index = $playerHoles.index(this);
     let hole = playerHoles[index];
+
+    $playerHoles.css("background-color", "");
+    hole.jObj.css("background-color", "yellow");
+
     const stoneCount = Number(hole.jObj.text());
-    console.log(stoneCount);
 
     hole.jObj.text(0);
     hole = hole.nextHole;
@@ -55,4 +61,41 @@ $(".player-holes > .hole").click(function() {
         hole.jObj.text(Number(hole.jObj.text()) + 1);
         hole = hole.nextHole;
     }
+
+    setTimeout(cpuPlay, 1000);
 });
+
+function cpuPlay() {
+    const index = cpuThink();
+
+    let hole = cpuHoles[index];
+
+    $cpuHoles.css("background-color", "");
+    hole.jObj.css("background-color", "yellow");
+
+    const stoneCount = Number(hole.jObj.text());
+
+    hole.jObj.text(0);
+    hole = hole.nextHole;
+    for (let i = 0; i < stoneCount; i++) {
+        hole.jObj.text(Number(hole.jObj.text()) + 1);
+        hole = hole.nextHole;
+    }
+}
+
+function cpuThink() {
+    let index = Math.floor(Math.random() * 6);
+
+    for (let i = 0; i < 6; i++) {
+        let hole = cpuHoles[index];
+        const stoneCount = Number(hole.jObj.text());
+        if (stoneCount !== 0) {
+            return index;
+        }
+        else {
+            index = (index + 1) % 6
+        }
+    }
+    
+    alert("cpuのholeが全て0なので打つ手なし");
+}
