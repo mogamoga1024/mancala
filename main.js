@@ -9,6 +9,7 @@ const $playerHoles = $(".player-holes > .hole");
 const $cpuHoles = $(".cpu-holes > .hole");
 const $stores = $(".store > .hole");
 const $message = $(".message");
+let canClick = true;
 const playerHoles = [];
 const cpuHoles = [];
 let playerStore = null;
@@ -43,11 +44,14 @@ cpuStore.nextHole = playerHoles[0];
 // ---
 
 $playerHoles.click(function() {
+    if (canClick === false) return;
+
     const index = $playerHoles.index(this);
     let hole = playerHoles[index];
-
     const stoneCount = Number(hole.jObj.text());
     if (stoneCount === 0) return;
+
+    canClick = false;
 
     $playerHoles.css("background-color", "");
     hole.jObj.css("background-color", "yellow");
@@ -68,6 +72,7 @@ $playerHoles.click(function() {
 
     if (canPlayAgain) {
         $message.text("もう一回あなたのターンです。");
+        canClick = true;
     }
     else {
         $message.text("CPUのターンです。");
@@ -114,8 +119,10 @@ function cpuPlay() {
         setTimeout(cpuPlay, 1000);
         return;
     }
-
-    $message.text("あなたのターンです。");
+    else {
+        $message.text("あなたのターンです。");
+        canClick = true;
+    }
 }
 
 function cpuThink() {
