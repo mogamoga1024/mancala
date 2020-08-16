@@ -82,7 +82,6 @@ module("copyHolesのテスト", {
         stoneMove(cpuHoles[2]);
         stoneMove(playerHoles[3]);
         stoneMove(cpuHoles[0]);
-
     }
 });
 
@@ -113,5 +112,58 @@ test("要素のコピーテスト:要素", function() {
         strictEqual(hole.stoneCount, originHole.stoneCount, "cpuHoles stoneCount");
         strictEqual(hole.isStore, false, "cpuHoles isStore");
     }
+
+    cpyPlayerHoles[0].stoneCount = -99;
+    notStrictEqual(cpyPlayerHoles[0].stoneCount, playerHoles[0].stoneCount, "playerHoles コピー元と参照が切れていること");
+    cpyCpuHoles[0].stoneCount = -66;
+    notStrictEqual(cpyCpuHoles[0].stoneCount, cpuHoles[0].stoneCount, "cpuHoles コピー元と参照が切れていること");
+
 });
 
+module("getCpuScoreのテスト", {
+    setup: function() {
+        mancalaInit();
+    }
+});
+
+test("計算結果のテスト", function() {
+    playerHoles[0].stoneCount = 0;
+    playerHoles[1].stoneCount = 0;
+    playerHoles[2].stoneCount = 0;
+    playerHoles[3].stoneCount = 0;
+    playerHoles[4].stoneCount = 0;
+    playerHoles[5].stoneCount = 0;
+
+    strictEqual(getCpuScore(playerHoles, cpuHoles), -6);
+});
+
+test("計算結果のテスト", function() {
+    cpuHoles[0].stoneCount = 0;
+    cpuHoles[1].stoneCount = 0;
+    cpuHoles[2].stoneCount = 0;
+    cpuHoles[3].stoneCount = 0;
+    cpuHoles[4].stoneCount = 0;
+    cpuHoles[5].stoneCount = 0;
+
+    strictEqual(getCpuScore(playerHoles, cpuHoles), 12);
+});
+
+test("計算結果のテスト", function() {
+    playerHoles[0].stoneCount = 0;
+    playerHoles[2].stoneCount = 0;
+    playerHoles[3].stoneCount = 0;
+    cpuHoles[1].stoneCount = 0;
+    cpuHoles[2].stoneCount = 0;
+
+    strictEqual(getCpuScore(playerHoles, cpuHoles), 1);
+});
+
+test("計算結果のテスト", function() {
+    playerHoles[0].stoneCount = 0;
+    playerHoles[2].stoneCount = 0;
+    cpuHoles[1].stoneCount = 0;
+    cpuHoles[2].stoneCount = 0;
+    cpuHoles[3].stoneCount = 0;
+
+    strictEqual(getCpuScore(playerHoles, cpuHoles), 4);
+});

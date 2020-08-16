@@ -166,6 +166,7 @@ function copyHoles(srcPlayerHoles, srcCpuHoles) {
     };
 }
 
+/*
 function cpuThink() {
     let index = Math.floor(Math.random() * 6);
 
@@ -180,4 +181,54 @@ function cpuThink() {
     }
     
     alert("Error: cpuのholeが全て0なので打つ手なし");
+}
+*/
+
+function cpuThink() {
+
+    let selectHolesIndex = -1;
+    let maxScore = -999999;
+    for (let i = 0; i < cpuHoles.length; i++) {
+        const holesList = copyHoles(playerHoles, cpuHoles);
+        const cpyPlayerHoles = holesList.playerHoles;
+        const cpyCpuHoles = holesList.cpuHoles;
+
+        if (cpyCpuHoles[i].stoneCount === 0) {
+            console.log(i);
+            continue;
+        }
+
+        stoneMove(cpyCpuHoles[i]);
+        const score = getCpuScore(cpyPlayerHoles, cpyCpuHoles);
+        if (maxScore < score) {
+            maxScore = score;
+            selectHolesIndex = i;
+        }
+    }
+
+    if (selectHolesIndex === -1) {
+        alert("Error: cpuのholeが全て0なので打つ手なし");
+    }
+
+    return selectHolesIndex;
+}
+
+/**
+ * CPUのフィールドに0が多いほど、
+ * Playerのフィールドに0が少ないほど
+ * 高いスコアを返す。
+ */
+function getCpuScore(playerHoles, cpuHoles) {
+    let playerHolesZeroCount = 0
+    let cpuHolesZeroCount = 0
+    for (let i = 0; i < playerHoles.length; i++) {
+        if (playerHoles[i].stoneCount === 0) {
+            playerHolesZeroCount++;
+        }
+        if (cpuHoles[i].stoneCount === 0) {
+            cpuHolesZeroCount++;
+        }
+    }
+    
+    return cpuHolesZeroCount * 2 - playerHolesZeroCount;
 }
