@@ -194,7 +194,6 @@ function cpuThink() {
         const cpyCpuHoles = holesList.cpuHoles;
 
         if (cpyCpuHoles[i].stoneCount === 0) {
-            console.log(i);
             continue;
         }
 
