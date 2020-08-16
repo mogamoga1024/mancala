@@ -204,7 +204,7 @@ test("デバグ", function() {
     cpuHoles[1].stoneCount = 0;
     cpuHoles[2].stoneCount = 0;
     cpuHoles[3].stoneCount = 2;
-    cpuHoles[4].stoneCount = 2;
+    cpuHoles[4].stoneCount = 0;
     cpuHoles[5].stoneCount = 3;
 
     const selectHolesIndex = minimax(playerHoles, cpuHoles, 4, true).selectHolesIndex;

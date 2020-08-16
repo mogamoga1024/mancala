@@ -224,14 +224,6 @@ function BestSelectResult(score, selectHolesIndex) {
 
 function minimax(playerHoles, cpuHoles, depth, isCpuTurn) {
 
-    // console.log("============");
-    // console.log("depth: " + depth);
-    // console.log("turn: " + isCpuTurn ? "cpu" : "player");
-
-    if (!isCpuTurn) {
-        console.log("========= " + depth);
-    }
-
     if (isWin(cpuHoles)) {
         console.log("cpu win");
         return new BestSelectResult(1000);
@@ -262,13 +254,12 @@ function minimax(playerHoles, cpuHoles, depth, isCpuTurn) {
             const isCpuTurn = stoneMove(cpyCpuHoles[i]);
             cpuScore = minimax(cpyPlayerHoles, cpyCpuHoles, depth - 1, isCpuTurn).score;
 
-            //console.log("cpuScore: " + cpuScore);
-
             if (maxCpuScore < cpuScore) {
                 maxCpuScore = cpuScore;
                 selectHolesIndex = i;
             }
         }
+        cpuScore = maxCpuScore;
     }
     else {
         for (let i = 0; i < playerHoles.length; i++) {
@@ -283,18 +274,11 @@ function minimax(playerHoles, cpuHoles, depth, isCpuTurn) {
             const isPlayerTurn = stoneMove(cpyPlayerHoles[i]);
             cpuScore = minimax(cpyPlayerHoles, cpyCpuHoles, depth - 1, !isPlayerTurn).score;
 
-            if (!isCpuTurn) {
-                //console.log("cpuScore: " + cpuScore);
-            }
-
             if (minCpuScore > cpuScore) {
                 minCpuScore = cpuScore;
             }
         }
-    }
-
-    if (!isCpuTurn) {
-        //console.log("minCpuScore: " + minCpuScore);
+        cpuScore = minCpuScore;
     }
 
     return new BestSelectResult(cpuScore, selectHolesIndex);
