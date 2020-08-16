@@ -195,24 +195,6 @@ function copyHoles(srcPlayerHoles, srcCpuHoles) {
     };
 }
 
-/*
-function cpuThink() {
-    let index = Math.floor(Math.random() * 6);
-
-    for (let i = 0; i < 6; i++) {
-        let hole = cpuHoles[index];
-        if (hole.stoneCount !== 0) {
-            return index;
-        }
-        else {
-            index = (index + 1) % 6
-        }
-    }
-    
-    alert("Error: cpuのholeが全て0なので打つ手なし");
-}
-*/
-
 function cpuThink() {
     return minimax(playerHoles, cpuHoles, 4, true).selectHolesIndex;
 }
@@ -223,14 +205,6 @@ function BestSelectResult(score, selectHolesIndex) {
 }
 
 function minimax(playerHoles, cpuHoles, depth, isCpuTurn) {
-
-    // console.log("============");
-    // console.log("depth: " + depth);
-    // console.log("turn: " + isCpuTurn ? "cpu" : "player");
-
-    if (!isCpuTurn) {
-        console.log("========= " + depth);
-    }
 
     if (isWin(cpuHoles)) {
         console.log("cpu win");
@@ -262,13 +236,12 @@ function minimax(playerHoles, cpuHoles, depth, isCpuTurn) {
             const isCpuTurn = stoneMove(cpyCpuHoles[i]);
             cpuScore = minimax(cpyPlayerHoles, cpyCpuHoles, depth - 1, isCpuTurn).score;
 
-            //console.log("cpuScore: " + cpuScore);
-
             if (maxCpuScore < cpuScore) {
                 maxCpuScore = cpuScore;
                 selectHolesIndex = i;
             }
         }
+        cpuScore = maxCpuScore;
     }
     else {
         for (let i = 0; i < playerHoles.length; i++) {
@@ -283,18 +256,11 @@ function minimax(playerHoles, cpuHoles, depth, isCpuTurn) {
             const isPlayerTurn = stoneMove(cpyPlayerHoles[i]);
             cpuScore = minimax(cpyPlayerHoles, cpyCpuHoles, depth - 1, !isPlayerTurn).score;
 
-            if (!isCpuTurn) {
-                //console.log("cpuScore: " + cpuScore);
-            }
-
             if (minCpuScore > cpuScore) {
                 minCpuScore = cpuScore;
             }
         }
-    }
-
-    if (!isCpuTurn) {
-        //console.log("minCpuScore: " + minCpuScore);
+        cpuScore = minCpuScore;
     }
 
     return new BestSelectResult(cpuScore, selectHolesIndex);
