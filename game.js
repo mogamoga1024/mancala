@@ -55,6 +55,20 @@ function plyaerPlay() {
 
     canClick = false;
 
+    console.log("== player turn ==");
+    console.log("playerHoles[0].stoneCount: " + playerHoles[0].stoneCount);
+    console.log("playerHoles[1].stoneCount: " + playerHoles[1].stoneCount);
+    console.log("playerHoles[2].stoneCount: " + playerHoles[2].stoneCount);
+    console.log("playerHoles[3].stoneCount: " + playerHoles[3].stoneCount);
+    console.log("playerHoles[4].stoneCount: " + playerHoles[4].stoneCount);
+    console.log("playerHoles[5].stoneCount: " + playerHoles[5].stoneCount);
+    console.log("cpuHoles[0].stoneCount: " + cpuHoles[0].stoneCount);
+    console.log("cpuHoles[1].stoneCount: " + cpuHoles[1].stoneCount);
+    console.log("cpuHoles[2].stoneCount: " + cpuHoles[2].stoneCount);
+    console.log("cpuHoles[3].stoneCount: " + cpuHoles[3].stoneCount);
+    console.log("cpuHoles[4].stoneCount: " + cpuHoles[4].stoneCount);
+    console.log("cpuHoles[5].stoneCount: " + cpuHoles[5].stoneCount);
+
     $playerHoles.css("background-color", "");
     hole.jObj.css("background-color", "yellow");
 
@@ -101,6 +115,21 @@ function isWin(holes) {
 }
 
 function cpuPlay() {
+
+    console.log("== cpu turn ==");
+    console.log("playerHoles[0].stoneCount: " + playerHoles[0].stoneCount);
+    console.log("playerHoles[1].stoneCount: " + playerHoles[1].stoneCount);
+    console.log("playerHoles[2].stoneCount: " + playerHoles[2].stoneCount);
+    console.log("playerHoles[3].stoneCount: " + playerHoles[3].stoneCount);
+    console.log("playerHoles[4].stoneCount: " + playerHoles[4].stoneCount);
+    console.log("playerHoles[5].stoneCount: " + playerHoles[5].stoneCount);
+    console.log("cpuHoles[0].stoneCount: " + cpuHoles[0].stoneCount);
+    console.log("cpuHoles[1].stoneCount: " + cpuHoles[1].stoneCount);
+    console.log("cpuHoles[2].stoneCount: " + cpuHoles[2].stoneCount);
+    console.log("cpuHoles[3].stoneCount: " + cpuHoles[3].stoneCount);
+    console.log("cpuHoles[4].stoneCount: " + cpuHoles[4].stoneCount);
+    console.log("cpuHoles[5].stoneCount: " + cpuHoles[5].stoneCount);
+
     const index = cpuThink();
 
     let hole = cpuHoles[index];
@@ -185,32 +214,92 @@ function cpuThink() {
 */
 
 function cpuThink() {
+    return minimax(playerHoles, cpuHoles, 4, true).selectHolesIndex;
+}
+
+function BestSelectResult(score, selectHolesIndex) {
+    this.score = score;
+    this.selectHolesIndex = (selectHolesIndex !== undefined) ? selectHolesIndex : -1;
+}
+
+function minimax(playerHoles, cpuHoles, depth, isCpuTurn) {
+
+    // console.log("============");
+    // console.log("depth: " + depth);
+    // console.log("turn: " + isCpuTurn ? "cpu" : "player");
+
+    if (!isCpuTurn) {
+        console.log("========= " + depth);
+    }
+
+    if (isWin(cpuHoles)) {
+        console.log("cpu win");
+        return new BestSelectResult(1000);
+    }
+    if (isWin(playerHoles)) {
+        console.log("player win");
+        return new BestSelectResult(-1000);
+    }
+
+    if (depth === 0) {
+        return new BestSelectResult(getCpuScore(playerHoles, cpuHoles));
+    }
 
     let selectHolesIndex = -1;
-    let maxScore = -999999;
-    for (let i = 0; i < cpuHoles.length; i++) {
-        const holesList = copyHoles(playerHoles, cpuHoles);
-        const cpyPlayerHoles = holesList.playerHoles;
-        const cpyCpuHoles = holesList.cpuHoles;
+    let maxCpuScore = -999999;
+    let minCpuScore = 999999;
+    let cpuScore = 0;
+    if (isCpuTurn) {
+        for (let i = 0; i < cpuHoles.length; i++) {
+            const holesList = copyHoles(playerHoles, cpuHoles);
+            const cpyPlayerHoles = holesList.playerHoles;
+            const cpyCpuHoles = holesList.cpuHoles;
 
-        if (cpyCpuHoles[i].stoneCount === 0) {
-            continue;
+            if (cpyCpuHoles[i].stoneCount === 0) {
+                continue;
+            }
+
+            const isCpuTurn = stoneMove(cpyCpuHoles[i]);
+            cpuScore = minimax(cpyPlayerHoles, cpyCpuHoles, depth - 1, isCpuTurn).score;
+
+            //console.log("cpuScore: " + cpuScore);
+
+            if (maxCpuScore < cpuScore) {
+                maxCpuScore = cpuScore;
+                selectHolesIndex = i;
+            }
         }
+    }
+    else {
+        for (let i = 0; i < playerHoles.length; i++) {
+            const holesList = copyHoles(playerHoles, cpuHoles);
+            const cpyPlayerHoles = holesList.playerHoles;
+            const cpyCpuHoles = holesList.cpuHoles;
 
-        stoneMove(cpyCpuHoles[i]);
-        const score = getCpuScore(cpyPlayerHoles, cpyCpuHoles);
-        if (maxScore < score) {
-            maxScore = score;
-            selectHolesIndex = i;
+            if (cpyPlayerHoles[i].stoneCount === 0) {
+                continue;
+            }
+
+            const isPlayerTurn = stoneMove(cpyPlayerHoles[i]);
+            cpuScore = minimax(cpyPlayerHoles, cpyCpuHoles, depth - 1, !isPlayerTurn).score;
+
+            if (!isCpuTurn) {
+                //console.log("cpuScore: " + cpuScore);
+            }
+
+            if (minCpuScore > cpuScore) {
+                minCpuScore = cpuScore;
+            }
         }
     }
 
-    if (selectHolesIndex === -1) {
-        alert("Error: cpuのholeが全て0なので打つ手なし");
+    if (!isCpuTurn) {
+        //console.log("minCpuScore: " + minCpuScore);
     }
 
-    return selectHolesIndex;
+    return new BestSelectResult(cpuScore, selectHolesIndex);
 }
+
 
 /**
  * CPUのフィールドに0が多いほど、

@@ -167,3 +167,47 @@ test("計算結果のテスト", function() {
 
     strictEqual(getCpuScore(playerHoles, cpuHoles), 4);
 });
+
+module("minimaxのテスト", {
+    setup: function() {
+        mancalaInit();
+    }
+});
+
+test("デバグ", function() {
+    playerHoles[0].stoneCount = 0;
+    playerHoles[1].stoneCount = 0;
+    playerHoles[2].stoneCount = 0;
+    playerHoles[3].stoneCount = 0;
+    playerHoles[4].stoneCount = 0;
+    playerHoles[5].stoneCount = 6;
+    cpuHoles[0].stoneCount = 1;
+    cpuHoles[1].stoneCount = 1;
+    cpuHoles[2].stoneCount = 1;
+    cpuHoles[3].stoneCount = 1;
+    cpuHoles[4].stoneCount = 1;
+    cpuHoles[5].stoneCount = 0;
+
+    const selectHolesIndex = minimax(playerHoles, cpuHoles, 4, true).selectHolesIndex;
+
+    notStrictEqual(selectHolesIndex, -1);
+})
+
+test("デバグ", function() {
+    playerHoles[0].stoneCount = 0;
+    playerHoles[1].stoneCount = 0;
+    playerHoles[2].stoneCount = 0;
+    playerHoles[3].stoneCount = 0;
+    playerHoles[4].stoneCount = 2;
+    playerHoles[5].stoneCount = 2;
+    cpuHoles[0].stoneCount = 0;
+    cpuHoles[1].stoneCount = 0;
+    cpuHoles[2].stoneCount = 0;
+    cpuHoles[3].stoneCount = 2;
+    cpuHoles[4].stoneCount = 2;
+    cpuHoles[5].stoneCount = 3;
+
+    const selectHolesIndex = minimax(playerHoles, cpuHoles, 4, true).selectHolesIndex;
+
+    strictEqual(selectHolesIndex, 5);
+})
