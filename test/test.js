@@ -134,7 +134,7 @@ test("計算結果のテスト", function() {
     playerHoles[4].stoneCount = 0;
     playerHoles[5].stoneCount = 0;
 
-    strictEqual(getCpuScore(playerHoles, cpuHoles), -6);
+    strictEqual(getCpuScore(playerHoles, cpuHoles), -9);
 });
 
 test("計算結果のテスト", function() {
@@ -145,7 +145,7 @@ test("計算結果のテスト", function() {
     cpuHoles[4].stoneCount = 0;
     cpuHoles[5].stoneCount = 0;
 
-    strictEqual(getCpuScore(playerHoles, cpuHoles), 12);
+    strictEqual(getCpuScore(playerHoles, cpuHoles), 18);
 });
 
 test("計算結果のテスト", function() {
@@ -155,7 +155,7 @@ test("計算結果のテスト", function() {
     cpuHoles[1].stoneCount = 0;
     cpuHoles[2].stoneCount = 0;
 
-    strictEqual(getCpuScore(playerHoles, cpuHoles), 1);
+    strictEqual(getCpuScore(playerHoles, cpuHoles), 0);
 });
 
 test("計算結果のテスト", function() {
@@ -165,7 +165,7 @@ test("計算結果のテスト", function() {
     cpuHoles[2].stoneCount = 0;
     cpuHoles[3].stoneCount = 0;
 
-    strictEqual(getCpuScore(playerHoles, cpuHoles), 4);
+    strictEqual(getCpuScore(playerHoles, cpuHoles), 6);
 });
 
 module("minimaxのテスト", {

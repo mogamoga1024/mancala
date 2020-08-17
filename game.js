@@ -196,7 +196,7 @@ function copyHoles(srcPlayerHoles, srcCpuHoles) {
 }
 
 function cpuThink() {
-    return minimax(playerHoles, cpuHoles, 4, true).selectHolesIndex;
+    return minimax(playerHoles, cpuHoles, 10, true).selectHolesIndex;
 }
 
 function BestSelectResult(score, selectHolesIndex) {
@@ -268,21 +268,28 @@ function minimax(playerHoles, cpuHoles, depth, isCpuTurn) {
 
 
 /**
- * CPUのフィールドに0が多いほど、
- * Playerのフィールドに0が少ないほど
+ * CPUのフィールドの前に0が多いほど、
+ * Playerのフィールド前に0が少ないほど
  * 高いスコアを返す。
  */
 function getCpuScore(playerHoles, cpuHoles) {
-    let playerHolesZeroCount = 0
-    let cpuHolesZeroCount = 0
+    let subPlayerScore = 0;
+    let subCpuScore = 0;
+    let centerIndex = Math.floor(playerHoles.length / 2);
     for (let i = 0; i < playerHoles.length; i++) {
         if (playerHoles[i].stoneCount === 0) {
-            playerHolesZeroCount++;
+            subPlayerScore += 1;
+            if (i >= centerIndex) {
+                subPlayerScore += 1;
+            }
         }
         if (cpuHoles[i].stoneCount === 0) {
-            cpuHolesZeroCount++;
+            subCpuScore += 1;
+            if (i >= centerIndex) {
+                subCpuScore += 1;
+            }
         }
     }
     
-    return cpuHolesZeroCount * 2 - playerHolesZeroCount;
+    return subCpuScore * 2 - subPlayerScore;
 }
