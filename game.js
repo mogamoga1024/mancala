@@ -205,6 +205,10 @@ function BestSelectResult(score, selectHolesIndex) {
 }
 
 function minimax(playerHoles, cpuHoles, depth, isCpuTurn) {
+    return alphabeta(playerHoles, cpuHoles, depth, isCpuTurn, -999999, 999999);
+}
+
+function alphabeta(playerHoles, cpuHoles, depth, isCpuTurn, alpha, beta) {
 
     if (isWin(cpuHoles)) {
         console.log("cpu win");
@@ -220,8 +224,6 @@ function minimax(playerHoles, cpuHoles, depth, isCpuTurn) {
     }
 
     let selectHolesIndex = -1;
-    let maxCpuScore = -999999;
-    let minCpuScore = 999999;
     let cpuScore = 0;
     if (isCpuTurn) {
         for (let i = 0; i < cpuHoles.length; i++) {
@@ -234,14 +236,18 @@ function minimax(playerHoles, cpuHoles, depth, isCpuTurn) {
             }
 
             const isCpuTurn = stoneMove(cpyCpuHoles[i]);
-            cpuScore = minimax(cpyPlayerHoles, cpyCpuHoles, depth - 1, isCpuTurn).score;
+            cpuScore = alphabeta(cpyPlayerHoles, cpyCpuHoles, depth - 1, isCpuTurn, alpha, beta).score;
 
-            if (maxCpuScore < cpuScore) {
-                maxCpuScore = cpuScore;
+            if (alpha < cpuScore) {
+                alpha = cpuScore;
                 selectHolesIndex = i;
             }
+            // アルファカット
+            if (alpha >= beta) {
+                break;
+            }
         }
-        cpuScore = maxCpuScore;
+        return new BestSelectResult(alpha, selectHolesIndex);
     }
     else {
         for (let i = 0; i < playerHoles.length; i++) {
@@ -254,16 +260,18 @@ function minimax(playerHoles, cpuHoles, depth, isCpuTurn) {
             }
 
             const isPlayerTurn = stoneMove(cpyPlayerHoles[i]);
-            cpuScore = minimax(cpyPlayerHoles, cpyCpuHoles, depth - 1, !isPlayerTurn).score;
+            cpuScore = alphabeta(cpyPlayerHoles, cpyCpuHoles, depth - 1, !isPlayerTurn, alpha, beta).score;
 
-            if (minCpuScore > cpuScore) {
-                minCpuScore = cpuScore;
+            if (beta > cpuScore) {
+                beta = cpuScore;
+            }
+            // ベータカット
+            if (alpha >= beta) {
+                break;
             }
         }
-        cpuScore = minCpuScore;
+        return new BestSelectResult(beta);
     }
-
-    return new BestSelectResult(cpuScore, selectHolesIndex);
 }
 
 
