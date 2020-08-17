@@ -55,7 +55,9 @@ function plyaerPlay() {
 
     canClick = false;
 
-    console.log("== player turn ==");
+    //console.log("== player turn ==");
+    console.log("player: " + index);
+    /*
     console.log("playerHoles[0].stoneCount: " + playerHoles[0].stoneCount);
     console.log("playerHoles[1].stoneCount: " + playerHoles[1].stoneCount);
     console.log("playerHoles[2].stoneCount: " + playerHoles[2].stoneCount);
@@ -68,6 +70,7 @@ function plyaerPlay() {
     console.log("cpuHoles[3].stoneCount: " + cpuHoles[3].stoneCount);
     console.log("cpuHoles[4].stoneCount: " + cpuHoles[4].stoneCount);
     console.log("cpuHoles[5].stoneCount: " + cpuHoles[5].stoneCount);
+    */
 
     $playerHoles.css("background-color", "");
     hole.jObj.css("background-color", "yellow");
@@ -116,7 +119,8 @@ function isWin(holes) {
 
 function cpuPlay() {
 
-    console.log("== cpu turn ==");
+    //console.log("== cpu turn ==");
+    /*
     console.log("playerHoles[0].stoneCount: " + playerHoles[0].stoneCount);
     console.log("playerHoles[1].stoneCount: " + playerHoles[1].stoneCount);
     console.log("playerHoles[2].stoneCount: " + playerHoles[2].stoneCount);
@@ -129,8 +133,11 @@ function cpuPlay() {
     console.log("cpuHoles[3].stoneCount: " + cpuHoles[3].stoneCount);
     console.log("cpuHoles[4].stoneCount: " + cpuHoles[4].stoneCount);
     console.log("cpuHoles[5].stoneCount: " + cpuHoles[5].stoneCount);
+    */
 
     const index = cpuThink();
+
+    console.log("cpu: " + index);
 
     let hole = cpuHoles[index];
 
@@ -196,7 +203,7 @@ function copyHoles(srcPlayerHoles, srcCpuHoles) {
 }
 
 function cpuThink() {
-    return minimax(playerHoles, cpuHoles, 10, true).selectHolesIndex;
+    return minimax(playerHoles, cpuHoles, 12, true).selectHolesIndex;
 }
 
 function BestSelectResult(score, selectHolesIndex) {
@@ -211,11 +218,11 @@ function minimax(playerHoles, cpuHoles, depth, isCpuTurn) {
 function alphabeta(playerHoles, cpuHoles, depth, isCpuTurn, alpha, beta) {
 
     if (isWin(cpuHoles)) {
-        console.log("cpu win");
+        //console.log("cpu win");
         return new BestSelectResult(1000);
     }
     if (isWin(playerHoles)) {
-        console.log("player win");
+        //console.log("player win");
         return new BestSelectResult(-1000);
     }
 
