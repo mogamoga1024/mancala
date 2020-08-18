@@ -231,7 +231,7 @@ test("デバグ", function() {
     notStrictEqual(selectHolesIndex, -1);
 })
 
-test("デバグ", function() {
+test("負けの確信テスト", function() {
     playerHoles[0].stoneCount = 0;
     playerHoles[1].stoneCount = 0;
     playerHoles[2].stoneCount = 0;
@@ -245,9 +245,46 @@ test("デバグ", function() {
     cpuHoles[4].stoneCount = 3;
     cpuHoles[5].stoneCount = 0;
 
-    const selectHolesIndex = minimax(playerHoles, cpuHoles, 13, true).selectHolesIndex;
+    strictEqual(minimax(playerHoles, cpuHoles, 13, true).score, minScore);
+})
 
-    strictEqual(selectHolesIndex, 4);
+test("勝ちの確信テスト", function() {
+    playerHoles[0].stoneCount = 0;
+    playerHoles[1].stoneCount = 0;
+    playerHoles[2].stoneCount = 0;
+    playerHoles[3].stoneCount = 0;
+    playerHoles[4].stoneCount = 0;
+    playerHoles[5].stoneCount = 2;
+    cpuHoles[0].stoneCount = 6;
+    cpuHoles[1].stoneCount = 4;
+    cpuHoles[2].stoneCount = 2;
+    cpuHoles[3].stoneCount = 0;
+    cpuHoles[4].stoneCount = 0;
+    cpuHoles[5].stoneCount = 0;
+
+    let score = minimax(playerHoles, cpuHoles, 7, true).score;
+    ok(maxScore - 1 < score && score < maxScore);
+})
+
+test("勝ちの確信テスト", function() {
+    playerHoles[0].stoneCount = 0;
+    playerHoles[1].stoneCount = 0;
+    playerHoles[2].stoneCount = 0;
+    playerHoles[3].stoneCount = 0;
+    playerHoles[4].stoneCount = 0;
+    playerHoles[5].stoneCount = 2;
+    cpuHoles[0].stoneCount = 6;
+    cpuHoles[1].stoneCount = 4;
+    cpuHoles[2].stoneCount = 2;
+    cpuHoles[3].stoneCount = 3;
+    cpuHoles[4].stoneCount = 1;
+    cpuHoles[5].stoneCount = 1;
+
+    let score1 = minimax(playerHoles, cpuHoles, 10, true).score;
+    ok(maxScore - 1 < score1 && score1 < maxScore);
+
+    let score2 = minimax(playerHoles, cpuHoles, 13, true).score;
+    ok(maxScore - 1 < score2 && score2 < maxScore);
 })
 
 module("mancalaDebugInitのテスト");

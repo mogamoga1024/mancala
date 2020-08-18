@@ -120,8 +120,6 @@ function isWin(holes) {
 }
 
 function cpuPlay() {
-    const index = cpuThink();
-
     console.log("==" + turn++ + "==");
     //console.log("== cpu turn ==");
     //*
@@ -138,6 +136,7 @@ function cpuPlay() {
     console.log("cpuHoles[4].stoneCount: " + cpuHoles[4].stoneCount);
     console.log("cpuHoles[5].stoneCount: " + cpuHoles[5].stoneCount);
     //*/
+    const index = cpuThink();
     console.log("cpu: " + index);
 
     let hole = cpuHoles[index];
@@ -223,11 +222,12 @@ function alphabeta(playerHoles, cpuHoles, depth, isCpuTurn, alpha, beta) {
 
     if (isWin(cpuHoles)) {
         //console.log("cpu win");
-        return new BestSelectResult(getCpuScore(playerHoles, cpuHoles));
+        // 勝利する手でも、ターンが少ない方が美しい。
+        return new BestSelectResult(maxScore - 1 / (depth + 2));
     }
     if (isWin(playerHoles)) {
         //console.log("player win");
-        return new BestSelectResult(getCpuScore(playerHoles, cpuHoles));
+        return new BestSelectResult(minScore);
     }
 
     if (depth === 0) {
@@ -249,7 +249,7 @@ function alphabeta(playerHoles, cpuHoles, depth, isCpuTurn, alpha, beta) {
             const isCpuTurn = stoneMove(cpyCpuHoles[i]);
             cpuScore = alphabeta(cpyPlayerHoles, cpyCpuHoles, depth - 1, isCpuTurn, alpha, beta).score;
 
-            if (alpha < cpuScore) {
+            if (alpha <= cpuScore) {
                 alpha = cpuScore;
                 selectHolesIndex = i;
             }
@@ -273,7 +273,7 @@ function alphabeta(playerHoles, cpuHoles, depth, isCpuTurn, alpha, beta) {
             const isPlayerTurn = stoneMove(cpyPlayerHoles[i]);
             cpuScore = alphabeta(cpyPlayerHoles, cpyCpuHoles, depth - 1, !isPlayerTurn, alpha, beta).score;
 
-            if (beta > cpuScore) {
+            if (beta >= cpuScore) {
                 beta = cpuScore;
             }
             // ベータカット
