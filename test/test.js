@@ -231,6 +231,25 @@ test("デバグ", function() {
     notStrictEqual(selectHolesIndex, -1);
 })
 
+test("デバグ", function() {
+    playerHoles[0].stoneCount = 0;
+    playerHoles[1].stoneCount = 0;
+    playerHoles[2].stoneCount = 0;
+    playerHoles[3].stoneCount = 0;
+    playerHoles[4].stoneCount = 0;
+    playerHoles[5].stoneCount = 7;
+    cpuHoles[0].stoneCount = 1;
+    cpuHoles[1].stoneCount = 0;
+    cpuHoles[2].stoneCount = 0;
+    cpuHoles[3].stoneCount = 0;
+    cpuHoles[4].stoneCount = 3;
+    cpuHoles[5].stoneCount = 0;
+
+    const selectHolesIndex = minimax(playerHoles, cpuHoles, 13, true).selectHolesIndex;
+
+    strictEqual(selectHolesIndex, 4);
+})
+
 module("mancalaDebugInitのテスト");
 
 test("デバグ", function() {
