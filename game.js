@@ -8,6 +8,7 @@ let canClick = true;
 const playerHoles = [];
 const cpuHoles = [];
 const defaultStoneCount = 4;
+let turn = 0;
 
 function mancalaInit() {
     canClick = true;
@@ -55,9 +56,9 @@ function plyaerPlay() {
 
     canClick = false;
 
+    console.log("==" + turn++ + "==");
     //console.log("== player turn ==");
-    console.log("player: " + index);
-    /*
+    //*
     console.log("playerHoles[0].stoneCount: " + playerHoles[0].stoneCount);
     console.log("playerHoles[1].stoneCount: " + playerHoles[1].stoneCount);
     console.log("playerHoles[2].stoneCount: " + playerHoles[2].stoneCount);
@@ -70,8 +71,9 @@ function plyaerPlay() {
     console.log("cpuHoles[3].stoneCount: " + cpuHoles[3].stoneCount);
     console.log("cpuHoles[4].stoneCount: " + cpuHoles[4].stoneCount);
     console.log("cpuHoles[5].stoneCount: " + cpuHoles[5].stoneCount);
-    */
-
+    //*/
+    console.log("player: " + index);
+    
     $playerHoles.css("background-color", "");
     hole.jObj.css("background-color", "yellow");
 
@@ -118,9 +120,11 @@ function isWin(holes) {
 }
 
 function cpuPlay() {
+    const index = cpuThink();
 
+    console.log("==" + turn++ + "==");
     //console.log("== cpu turn ==");
-    /*
+    //*
     console.log("playerHoles[0].stoneCount: " + playerHoles[0].stoneCount);
     console.log("playerHoles[1].stoneCount: " + playerHoles[1].stoneCount);
     console.log("playerHoles[2].stoneCount: " + playerHoles[2].stoneCount);
@@ -133,10 +137,7 @@ function cpuPlay() {
     console.log("cpuHoles[3].stoneCount: " + cpuHoles[3].stoneCount);
     console.log("cpuHoles[4].stoneCount: " + cpuHoles[4].stoneCount);
     console.log("cpuHoles[5].stoneCount: " + cpuHoles[5].stoneCount);
-    */
-
-    const index = cpuThink();
-
+    //*/
     console.log("cpu: " + index);
 
     let hole = cpuHoles[index];
@@ -203,7 +204,7 @@ function copyHoles(srcPlayerHoles, srcCpuHoles) {
 }
 
 function cpuThink() {
-    return minimax(playerHoles, cpuHoles, 12, true).selectHolesIndex;
+    return minimax(playerHoles, cpuHoles, 13, true).selectHolesIndex;
 }
 
 function BestSelectResult(score, selectHolesIndex) {
@@ -211,19 +212,22 @@ function BestSelectResult(score, selectHolesIndex) {
     this.selectHolesIndex = (selectHolesIndex !== undefined) ? selectHolesIndex : -1;
 }
 
+const minScore = -999999;
+const maxScore = 999999;
+
 function minimax(playerHoles, cpuHoles, depth, isCpuTurn) {
-    return alphabeta(playerHoles, cpuHoles, depth, isCpuTurn, -999999, 999999);
+    return alphabeta(playerHoles, cpuHoles, depth, isCpuTurn, minScore, maxScore);
 }
 
 function alphabeta(playerHoles, cpuHoles, depth, isCpuTurn, alpha, beta) {
 
     if (isWin(cpuHoles)) {
         //console.log("cpu win");
-        return new BestSelectResult(1000);
+        return new BestSelectResult(getCpuScore(playerHoles, cpuHoles));
     }
     if (isWin(playerHoles)) {
         //console.log("player win");
-        return new BestSelectResult(-1000);
+        return new BestSelectResult(getCpuScore(playerHoles, cpuHoles));
     }
 
     if (depth === 0) {

@@ -211,3 +211,44 @@ test("デバグ", function() {
 
     strictEqual(selectHolesIndex, 5);
 })
+
+test("デバグ", function() {
+    playerHoles[0].stoneCount = 0;
+    playerHoles[1].stoneCount = 0;
+    playerHoles[2].stoneCount = 1;
+    playerHoles[3].stoneCount = 0;
+    playerHoles[4].stoneCount = 0;
+    playerHoles[5].stoneCount = 3;
+    cpuHoles[0].stoneCount = 0;
+    cpuHoles[1].stoneCount = 0;
+    cpuHoles[2].stoneCount = 0;
+    cpuHoles[3].stoneCount = 1;
+    cpuHoles[4].stoneCount = 0;
+    cpuHoles[5].stoneCount = 0;
+
+    const selectHolesIndex = minimax(playerHoles, cpuHoles, 12, true).selectHolesIndex;
+
+    notStrictEqual(selectHolesIndex, -1);
+})
+
+module("mancalaDebugInitのテスト");
+
+test("デバグ", function() {
+    mancalaDebugInit(
+        [1, 1, 4, 5, 1, 4],
+        [3, 6, 4, 3, 6, 4]
+    );
+
+    strictEqual(playerHoles[0].stoneCount, 1);
+    strictEqual(playerHoles[1].stoneCount, 1);
+    strictEqual(playerHoles[2].stoneCount, 4);
+    strictEqual(playerHoles[3].stoneCount, 5);
+    strictEqual(playerHoles[4].stoneCount, 1);
+    strictEqual(playerHoles[5].stoneCount, 4);
+    strictEqual(cpuHoles[0].stoneCount, 3);
+    strictEqual(cpuHoles[1].stoneCount, 6);
+    strictEqual(cpuHoles[2].stoneCount, 4);
+    strictEqual(cpuHoles[3].stoneCount, 3);
+    strictEqual(cpuHoles[4].stoneCount, 6);
+    strictEqual(cpuHoles[5].stoneCount, 4);
+})
