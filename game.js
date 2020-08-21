@@ -252,7 +252,7 @@ function alphabeta(playerHoles, cpuHoles, depth, isCpuTurn, alpha, beta) {
             if (alpha <= cpuScore) {
                 alpha = cpuScore;
                 selectHolesIndex = i;
-                // アルファカット
+                // ベータカット
                 if (alpha >= beta) {
                     break;
                 }
@@ -275,7 +275,7 @@ function alphabeta(playerHoles, cpuHoles, depth, isCpuTurn, alpha, beta) {
 
             if (beta >= cpuScore) {
                 beta = cpuScore;
-                // ベータカット
+                // アルファカット
                 if (alpha >= beta) {
                     break;
                 }
