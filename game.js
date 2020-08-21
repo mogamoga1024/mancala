@@ -252,10 +252,10 @@ function alphabeta(playerHoles, cpuHoles, depth, isCpuTurn, alpha, beta) {
             if (alpha <= cpuScore) {
                 alpha = cpuScore;
                 selectHolesIndex = i;
-            }
-            // アルファカット
-            if (alpha >= beta) {
-                break;
+                // アルファカット
+                if (alpha >= beta) {
+                    break;
+                }
             }
         }
         return new BestSelectResult(alpha, selectHolesIndex);
@@ -275,10 +275,10 @@ function alphabeta(playerHoles, cpuHoles, depth, isCpuTurn, alpha, beta) {
 
             if (beta >= cpuScore) {
                 beta = cpuScore;
-            }
-            // ベータカット
-            if (alpha >= beta) {
-                break;
+                // ベータカット
+                if (alpha >= beta) {
+                    break;
+                }
             }
         }
         return new BestSelectResult(beta);
