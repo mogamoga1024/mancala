@@ -357,7 +357,7 @@ test("正常系(CPU)", function() {
     );
 
     const searchOrderIndexList = searchOrderSort(
-        playerHoles, cpuHoles, true, MIN_SCORE, MAX_SCORE
+        playerHoles, cpuHoles, 2, true, MIN_SCORE, MAX_SCORE
     );
 
     strictEqual(searchOrderIndexList.length, 2, "要素数");
@@ -371,7 +371,7 @@ test("正常系(Player)", function() {
     );
 
     const searchOrderIndexList = searchOrderSort(
-        playerHoles, cpuHoles, false, MIN_SCORE, MAX_SCORE
+        playerHoles, cpuHoles, 2, false, MIN_SCORE, MAX_SCORE
     );
 
     strictEqual(searchOrderIndexList.length, 2, "要素数");

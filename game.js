@@ -215,10 +215,10 @@ const MIN_SCORE = -999999;
 const MAX_SCORE = 999999;
 
 function minimax(playerHoles, cpuHoles, depth, isCpuTurn) {
-    return alphabeta(playerHoles, cpuHoles, depth, isCpuTurn, MIN_SCORE, MAX_SCORE);
+    return negascout(playerHoles, cpuHoles, depth, isCpuTurn, MIN_SCORE, MAX_SCORE);
 }
 
-function alphabeta(playerHoles, cpuHoles, depth, isCpuTurn, alpha, beta) {
+function negascout(playerHoles, cpuHoles, depth, isCpuTurn, alpha, beta) {
 
     if (isWin(cpuHoles)) {
         //console.log("cpu win");
@@ -228,7 +228,6 @@ function alphabeta(playerHoles, cpuHoles, depth, isCpuTurn, alpha, beta) {
     if (isWin(playerHoles)) {
         //console.log("player win");
         // 敗北でも最後まで抗いたい。
-        //return new BestSelectResult(MIN_SCORE + 1 - (1 / (depth + 2)));
         return new BestSelectResult(MIN_SCORE + 1 / (depth + 2));
     }
 
@@ -236,25 +235,34 @@ function alphabeta(playerHoles, cpuHoles, depth, isCpuTurn, alpha, beta) {
         return new BestSelectResult(getCpuScore(playerHoles, cpuHoles));
     }
 
+    let searchOrderIndexList = [];
+    if (depth >= 2) {
+        searchOrderIndexList = searchOrderSort(playerHoles, cpuHoles, 2, isCpuTurn, alpha, beta);
+    }
+    else {
+        let holes = isCpuTurn ? cpuHoles : playerHoles;
+        for (let i = 0; i < holes.length; i++) {
+            if (holes[i].stoneCount === 0) continue;
+            searchOrderIndexList.push(i);
+        }
+    }
+
     let selectHolesIndex = -1;
     if (isCpuTurn) {
         let rtnMaxScore = MIN_SCORE;
-        for (let i = 0; i < cpuHoles.length; i++) {
+        for (let i = 0; i < searchOrderIndexList.length; i++) {
+            let index = searchOrderIndexList[i];
             const holesList = copyHoles(playerHoles, cpuHoles);
             const cpyPlayerHoles = holesList.playerHoles;
             const cpyCpuHoles = holesList.cpuHoles;
 
-            if (cpyCpuHoles[i].stoneCount === 0) {
-                continue;
-            }
-
-            const isCpuTurn = stoneMove(cpyCpuHoles[i]);
-            const cpuScore = alphabeta(cpyPlayerHoles, cpyCpuHoles, depth - 1, isCpuTurn, alpha, beta).score;
+            const isCpuTurn = stoneMove(cpyCpuHoles[index]);
+            const cpuScore = negascout(cpyPlayerHoles, cpyCpuHoles, depth - 1, isCpuTurn, alpha, beta).score;
 
             // Fail-Softのため
             if (cpuScore > rtnMaxScore) {
                 rtnMaxScore = cpuScore;
-                selectHolesIndex = i;
+                selectHolesIndex = index;
             }
 
             if (alpha <= cpuScore) {
@@ -269,22 +277,23 @@ function alphabeta(playerHoles, cpuHoles, depth, isCpuTurn, alpha, beta) {
     }
     else {
         let rtnMinScore = MAX_SCORE;
-        for (let i = 0; i < playerHoles.length; i++) {
+        for (let i = 0; i < searchOrderIndexList.length; i++) {
+            let index = searchOrderIndexList[i];
             const holesList = copyHoles(playerHoles, cpuHoles);
             const cpyPlayerHoles = holesList.playerHoles;
             const cpyCpuHoles = holesList.cpuHoles;
 
-            if (cpyPlayerHoles[i].stoneCount === 0) {
+            if (cpyPlayerHoles[index].stoneCount === 0) {
                 continue;
             }
 
-            const isPlayerTurn = stoneMove(cpyPlayerHoles[i]);
-            const cpuScore = alphabeta(cpyPlayerHoles, cpyCpuHoles, depth - 1, !isPlayerTurn, alpha, beta).score;
+            const isPlayerTurn = stoneMove(cpyPlayerHoles[index]);
+            const cpuScore = negascout(cpyPlayerHoles, cpyCpuHoles, depth - 1, !isPlayerTurn, alpha, beta).score;
 
             // Fail-Softのため
             if (cpuScore < rtnMinScore) {
                 rtnMinScore = cpuScore;
-                selectHolesIndex = i;
+                selectHolesIndex = index;
             }
 
             if (beta >= cpuScore) {
@@ -297,11 +306,6 @@ function alphabeta(playerHoles, cpuHoles, depth, isCpuTurn, alpha, beta) {
         }
         return new BestSelectResult(rtnMinScore, selectHolesIndex);
     }
-}
-
-function negascout(playerHoles, cpuHoles, depth, isCpuTurn, alpha, beta) {
-    // todo 並び替え
-    //const searchOrderIndexList = searchOrderSort(playerHoles, cpuHoles, isCpuTurn);
 }
 
 /**
@@ -331,9 +335,8 @@ function getCpuScore(playerHoles, cpuHoles) {
     return subCpuScore * 2 - subPlayerScore;
 }
 
-function searchOrderSort(playerHoles, cpuHoles, isCpuTurn, alpha, beta) {
+function searchOrderSort(playerHoles, cpuHoles, depth, isCpuTurn, alpha, beta) {
     const selectionOrderList = [];
-    const depth = 2;
 
     if (isCpuTurn) {
         for (let i = 0; i < cpuHoles.length; i++) {
@@ -346,7 +349,7 @@ function searchOrderSort(playerHoles, cpuHoles, isCpuTurn, alpha, beta) {
             }
 
             const isCpuTurn = stoneMove(cpyCpuHoles[i]);
-            const cpuScore = alphabeta(cpyPlayerHoles, cpyCpuHoles, depth - 1, isCpuTurn, alpha, beta).score;
+            const cpuScore = negascout(cpyPlayerHoles, cpyCpuHoles, depth - 1, isCpuTurn, alpha, beta).score;
             selectionOrderList.push(new BestSelectResult(cpuScore, i));
         }
     }
@@ -361,7 +364,7 @@ function searchOrderSort(playerHoles, cpuHoles, isCpuTurn, alpha, beta) {
             }
 
             const isPlayerTurn = stoneMove(cpyPlayerHoles[i]);
-            const cpuScore = alphabeta(cpyPlayerHoles, cpyCpuHoles, depth - 1, !isPlayerTurn, alpha, beta).score;
+            const cpuScore = negascout(cpyPlayerHoles, cpyCpuHoles, depth - 1, !isPlayerTurn, alpha, beta).score;
             selectionOrderList.push(new BestSelectResult(cpuScore, i));
         }
     }
