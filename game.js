@@ -228,8 +228,8 @@ function alphabeta(playerHoles, cpuHoles, depth, isCpuTurn, alpha, beta) {
     if (isWin(playerHoles)) {
         //console.log("player win");
         // 敗北でも最後まで抗いたい。
-        return new BestSelectResult(MIN_SCORE + 1 - (1 / (depth + 2)));
-        //return new BestSelectResult(MIN_SCORE + 1 / (depth + 2));
+        //return new BestSelectResult(MIN_SCORE + 1 - (1 / (depth + 2)));
+        return new BestSelectResult(MIN_SCORE + 1 / (depth + 2));
     }
 
     if (depth === 0) {
