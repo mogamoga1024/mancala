@@ -348,6 +348,36 @@ test("要素の確認", function() {
     strictEqual(cpuHoles[5].stoneCount, 4);
 });
 
+module("searchOrderSortのテスト");
+
+test("正常系(CPU)", function() {
+    mancalaDebugInit(
+        [0, 0, 0, 0, 0, 1],
+        [0, 0, 0, 3, 1, 0],
+    );
+
+    const searchOrderIndexList = searchOrderSort(
+        playerHoles, cpuHoles, true, MIN_SCORE, MAX_SCORE
+    );
+
+    strictEqual(searchOrderIndexList.length, 2, "要素数");
+    strictEqual(searchOrderIndexList[0], 3, "期待通りに並び替えられたか");
+});
+
+test("正常系(Player)", function() {
+    mancalaDebugInit(
+        [0, 0, 0, 3, 1, 0],
+        [0, 0, 0, 0, 0, 1],
+    );
+
+    const searchOrderIndexList = searchOrderSort(
+        playerHoles, cpuHoles, false, MIN_SCORE, MAX_SCORE
+    );
+
+    strictEqual(searchOrderIndexList.length, 2, "要素数");
+    strictEqual(searchOrderIndexList[0], 3, "期待通りに並び替えられたか");
+});
+
 module("ただのデバグ");
 
 test("デバグ", function() {
