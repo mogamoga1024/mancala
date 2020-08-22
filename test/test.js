@@ -212,7 +212,7 @@ test("負け確でもあきらめないフリをする", function() {
     strictEqual(selectHolesIndex, 5);
 });
 
-test("デバグ 仮：負け確でもあきらめないフリをする", function() {
+test("負け確でもあきらめないフリをする", function() {
     playerHoles[0].stoneCount = 0;
     playerHoles[1].stoneCount = 0;
     playerHoles[2].stoneCount = 0;
