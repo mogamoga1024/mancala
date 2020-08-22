@@ -174,7 +174,7 @@ module("minimaxのテスト", {
     }
 });
 
-test("デバグ", function() {
+test("正常系", function() {
     playerHoles[0].stoneCount = 0;
     playerHoles[1].stoneCount = 0;
     playerHoles[2].stoneCount = 0;
@@ -191,9 +191,9 @@ test("デバグ", function() {
     const selectHolesIndex = minimax(playerHoles, cpuHoles, 4, true).selectHolesIndex;
 
     notStrictEqual(selectHolesIndex, -1);
-})
+});
 
-test("デバグ", function() {
+test("負け確でもあきらめないフリをする", function() {
     playerHoles[0].stoneCount = 0;
     playerHoles[1].stoneCount = 0;
     playerHoles[2].stoneCount = 0;
@@ -210,9 +210,28 @@ test("デバグ", function() {
     const selectHolesIndex = minimax(playerHoles, cpuHoles, 4, true).selectHolesIndex;
 
     strictEqual(selectHolesIndex, 5);
-})
+});
 
-test("デバグ", function() {
+test("デバグ 仮：負け確でもあきらめないフリをする", function() {
+    playerHoles[0].stoneCount = 0;
+    playerHoles[1].stoneCount = 0;
+    playerHoles[2].stoneCount = 0;
+    playerHoles[3].stoneCount = 0;
+    playerHoles[4].stoneCount = 0;
+    playerHoles[5].stoneCount = 3;
+    cpuHoles[0].stoneCount = 1;
+    cpuHoles[1].stoneCount = 0;
+    cpuHoles[2].stoneCount = 0;
+    cpuHoles[3].stoneCount = 0;
+    cpuHoles[4].stoneCount = 3;
+    cpuHoles[5].stoneCount = 0;
+
+    const selectHolesIndex = minimax(playerHoles, cpuHoles, 13, true).selectHolesIndex;
+
+    strictEqual(selectHolesIndex, 4);
+});
+
+test("正常系", function() {
     playerHoles[0].stoneCount = 0;
     playerHoles[1].stoneCount = 0;
     playerHoles[2].stoneCount = 1;
@@ -228,8 +247,8 @@ test("デバグ", function() {
 
     const selectHolesIndex = minimax(playerHoles, cpuHoles, 12, true).selectHolesIndex;
 
-    notStrictEqual(selectHolesIndex, -1);
-})
+    strictEqual(selectHolesIndex, 3);
+});
 
 test("負けの確信テスト", function() {
     playerHoles[0].stoneCount = 0;
@@ -245,8 +264,28 @@ test("負けの確信テスト", function() {
     cpuHoles[4].stoneCount = 3;
     cpuHoles[5].stoneCount = 0;
 
-    strictEqual(minimax(playerHoles, cpuHoles, 13, true).score, minScore);
-})
+    let score = minimax(playerHoles, cpuHoles, 13, true).score;
+    ok(MIN_SCORE < score && score < MIN_SCORE + 1);
+});
+
+test("負けの確信テスト", function() {
+    playerHoles[0].stoneCount = 0;
+    playerHoles[1].stoneCount = 0;
+    playerHoles[2].stoneCount = 0;
+    playerHoles[3].stoneCount = 0;
+    playerHoles[4].stoneCount = 0;
+    playerHoles[5].stoneCount = 3;
+    cpuHoles[0].stoneCount = 1;
+    cpuHoles[1].stoneCount = 0;
+    cpuHoles[2].stoneCount = 0;
+    cpuHoles[3].stoneCount = 0;
+    cpuHoles[4].stoneCount = 3;
+    cpuHoles[5].stoneCount = 0;
+
+    let score = minimax(playerHoles, cpuHoles, 13, true).score;
+    console.log(score);
+    ok(MIN_SCORE < score && score < MIN_SCORE + 1);
+});
 
 test("勝ちの確信テスト", function() {
     playerHoles[0].stoneCount = 0;
@@ -263,8 +302,8 @@ test("勝ちの確信テスト", function() {
     cpuHoles[5].stoneCount = 0;
 
     let score = minimax(playerHoles, cpuHoles, 7, true).score;
-    ok(maxScore - 1 < score && score < maxScore);
-})
+    ok(MAX_SCORE - 1 < score && score < MAX_SCORE);
+});
 
 test("勝ちの確信テスト", function() {
     playerHoles[0].stoneCount = 0;
@@ -281,15 +320,15 @@ test("勝ちの確信テスト", function() {
     cpuHoles[5].stoneCount = 1;
 
     let score1 = minimax(playerHoles, cpuHoles, 10, true).score;
-    ok(maxScore - 1 < score1 && score1 < maxScore);
+    ok(MAX_SCORE - 1 < score1 && score1 < MAX_SCORE);
 
     let score2 = minimax(playerHoles, cpuHoles, 13, true).score;
-    ok(maxScore - 1 < score2 && score2 < maxScore);
-})
+    ok(MAX_SCORE - 1 < score2 && score2 < MAX_SCORE);
+});
 
 module("mancalaDebugInitのテスト");
 
-test("デバグ", function() {
+test("要素の確認", function() {
     mancalaDebugInit(
         [1, 1, 4, 5, 1, 4],
         [3, 6, 4, 3, 6, 4]
@@ -307,4 +346,32 @@ test("デバグ", function() {
     strictEqual(cpuHoles[3].stoneCount, 3);
     strictEqual(cpuHoles[4].stoneCount, 6);
     strictEqual(cpuHoles[5].stoneCount, 4);
-})
+});
+
+module("ただのデバグ");
+
+/*test("デバグ", function() {
+    const s0 = MIN_SCORE + 1 / (0 + 2);
+    const s1 = MIN_SCORE + 1 / (1 + 2);
+    const s2 = MIN_SCORE + 1 / (2 + 2);
+    const s3 = MIN_SCORE + 1 / (3 + 2);
+    const s4 = MIN_SCORE + 1 / (4 + 2);
+
+    ok(s0 < s1);
+    ok(s1 < s2);
+    ok(s2 < s3);
+    ok(s3 < s4);
+});*/
+
+test("デバグ", function() {
+    const s0 = MIN_SCORE + 1 - (1 / (0 + 2));
+    const s1 = MIN_SCORE + 1 - (1 / (1 + 2));
+    const s2 = MIN_SCORE + 1 - (1 / (2 + 2));
+    const s3 = MIN_SCORE + 1 - (1 / (3 + 2));
+    const s4 = MIN_SCORE + 1 - (1 / (4 + 2));
+
+    ok(s0 < s1);
+    ok(s1 < s2);
+    ok(s2 < s3);
+    ok(s3 < s4);
+});
