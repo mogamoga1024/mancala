@@ -327,6 +327,11 @@ function negascout(playerHoles, cpuHoles, depth, isCpuTurn, alpha, beta, isAlpha
                     console.log("beta: " + beta);
                 }
                 if (cpuScore === debugScore || hoge && depth === debugDepth && !isAlphaBeta) console.log("再探索 end: depth: " + (depth - 1) + " i: " + i);
+                // Fail-Softのため
+                if (cpuScore > rtnMaxScore) {
+                    rtnMaxScore = cpuScore;
+                    selectHolesIndex = index;
+                }
                 // ベータカット
                 if (cpuScore >= beta) {
                     if (cpuScore === debugScore || hoge && depth === debugDepth && !isAlphaBeta) console.log("beta cut");
@@ -395,6 +400,11 @@ function negascout(playerHoles, cpuHoles, depth, isCpuTurn, alpha, beta, isAlpha
                     console.log("beta: " + beta);
                 }
                 if (cpuScore === debugScore || hoge && depth === debugDepth && !isAlphaBeta) console.log("再探索 end: depth: " + (depth - 1) + " i: " + i);
+                // Fail-Softのため
+                if (cpuScore < rtnMinScore) {
+                    rtnMinScore = cpuScore;
+                    selectHolesIndex = index;
+                }
                 // アルファカット
                 if (cpuScore <= alpha) {
                     if (cpuScore === debugScore || hoge && depth === debugDepth && !isAlphaBeta) console.log("alpha cut");
