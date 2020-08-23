@@ -265,10 +265,11 @@ test("負けの確信テスト", function() {
     cpuHoles[5].stoneCount = 0;
 
     let score = minimax(playerHoles, cpuHoles, 13, true).score;
+    console.log(score);
     ok(MIN_SCORE < score && score < MIN_SCORE + 1);
 });
 
-test("負けの確信テスト", function() {
+test("nago 負けの確信テスト", function() {
     playerHoles[0].stoneCount = 0;
     playerHoles[1].stoneCount = 0;
     playerHoles[2].stoneCount = 0;
@@ -286,6 +287,28 @@ test("負けの確信テスト", function() {
     console.log(score);
     ok(MIN_SCORE < score && score < MIN_SCORE + 1);
 });
+
+/*
+test("debug 負けの確信テスト", function() {
+    playerHoles[0].stoneCount = 0;
+    playerHoles[1].stoneCount = 0;
+    playerHoles[2].stoneCount = 0;
+    playerHoles[3].stoneCount = 0;
+    playerHoles[4].stoneCount = 0;
+    playerHoles[5].stoneCount = 3;
+    cpuHoles[0].stoneCount = 1;
+    cpuHoles[1].stoneCount = 0;
+    cpuHoles[2].stoneCount = 0;
+    cpuHoles[3].stoneCount = 0;
+    cpuHoles[4].stoneCount = 3;
+    cpuHoles[5].stoneCount = 0;
+
+    let result = minimax(playerHoles, cpuHoles, 2, true);
+    console.log("score: " + result.score);
+    console.log("index: " + result.selectHolesIndex);
+    ok(MIN_SCORE < result.score && result.score < MIN_SCORE + 1);
+});
+*/
 
 test("勝ちの確信テスト", function() {
     playerHoles[0].stoneCount = 0;
@@ -362,6 +385,20 @@ test("正常系(CPU)", function() {
 
     strictEqual(searchOrderIndexList.length, 2, "要素数");
     strictEqual(searchOrderIndexList[0], 3, "期待通りに並び替えられたか");
+});
+
+test("debug 正常系(CPU)", function() {
+    mancalaDebugInit(
+        [0, 0, 0, 0, 0, 7],
+        [1, 0, 0, 0, 3, 0],
+    );
+
+    const searchOrderIndexList = searchOrderSort(
+        playerHoles, cpuHoles, 2, true, MIN_SCORE, MAX_SCORE
+    );
+
+    strictEqual(searchOrderIndexList.length, 2, "要素数");
+    strictEqual(searchOrderIndexList[0], 4, "期待通りに並び替えられたか");
 });
 
 test("正常系(Player)", function() {

@@ -2,10 +2,12 @@
 mancalaInit();
 /*
 mancalaDebugInit(
-    [1, 0, 0, 0, 0, 3],
-    [1, 0, 0, 0, 0, 1]
+    [0, 0, 0, 0, 1, 2],
+    [1, 0, 0, 0, 3, 0]
 );
 */
+
+console.log = function(hoge) {};
 
 console.log("game start");
 
