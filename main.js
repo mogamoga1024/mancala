@@ -7,8 +7,6 @@ mancalaDebugInit(
 );
 */
 
-console.log = function(hoge) {};
-
 console.log("game start");
 
 $playerHoles.click(plyaerPlay);

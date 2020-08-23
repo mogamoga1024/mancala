@@ -57,7 +57,6 @@ function plyaerPlay() {
     canClick = false;
 
     console.log("==" + turn++ + "==");
-    //console.log("== player turn ==");
     //*
     console.log("playerHoles[0].stoneCount: " + playerHoles[0].stoneCount);
     console.log("playerHoles[1].stoneCount: " + playerHoles[1].stoneCount);
@@ -121,7 +120,6 @@ function isWin(holes) {
 
 function cpuPlay() {
     console.log("==" + turn++ + "==");
-    //console.log("== cpu turn ==");
     //*
     console.log("playerHoles[0].stoneCount: " + playerHoles[0].stoneCount);
     console.log("playerHoles[1].stoneCount: " + playerHoles[1].stoneCount);
@@ -215,30 +213,12 @@ const MIN_SCORE = -999999;
 const MAX_SCORE = 999999;
 
 function minimax(playerHoles, cpuHoles, depth, isCpuTurn) {
-    const result = negascout(playerHoles, cpuHoles, depth, isCpuTurn, MIN_SCORE, MAX_SCORE);
-    /*
-    console.log("✰✰✰✰✰✰✰");
-    console.log("score: " + result.score);
-    console.log("✰✰✰✰✰✰✰");
-    */
-    return result;
+    return negascout(playerHoles, cpuHoles, depth, isCpuTurn, MIN_SCORE, MAX_SCORE);
 }
-
-let debug = 1;
-
-const debugScore = 141;
-const hoge = false; // true
-const debugDepth = 1010; // 9
 
 function negascout(playerHoles, cpuHoles, depth, isCpuTurn, alpha, beta, isAlphaBeta) {
 
     if (isAlphaBeta === undefined) isAlphaBeta = false;
-
-    if (depth === debugDepth && !isAlphaBeta) {
-        console.log("@@@@@@@@@@@@@@@@@@@@@@@@");
-    }
-
-    const isCpuTurnDebug = isCpuTurn;
 
     if (isWin(cpuHoles)) {
         //console.log("cpu win");
@@ -256,7 +236,7 @@ function negascout(playerHoles, cpuHoles, depth, isCpuTurn, alpha, beta, isAlpha
     }
 
     let searchOrderIndexList = [];
-    const depthOfSearchOrderSort = 2; // 2
+    const depthOfSearchOrderSort = 2;
     if (depth >= depthOfSearchOrderSort) {
         searchOrderIndexList = searchOrderSort(playerHoles, cpuHoles, depthOfSearchOrderSort, isCpuTurn, alpha, beta);
     }
@@ -286,19 +266,6 @@ function negascout(playerHoles, cpuHoles, depth, isCpuTurn, alpha, beta, isAlpha
                 cpuScore = negascout(cpyPlayerHoles, cpyCpuHoles, depth - 1, isCpuTurn, alpha, alpha + 1).score;
             }
 
-            // debug start
-            if (cpuScore === debugScore || hoge && depth === debugDepth && !isAlphaBeta) { 
-                console.log("=======================");
-                console.log("depth: " + (depth - 1) + " i: " + i);
-                console.log("isCpu: " + isCpuTurnDebug);
-                console.log("playerHoles: " + cpyPlayerHoles.map(function(e) { return e.stoneCount; }).join(", "));
-                console.log("cpuHolesHoles: " + cpyCpuHoles.map(function(e) { return e.stoneCount; }).join(", "));
-                console.log("cpuScore: " + cpuScore);
-                console.log("alpha: " + alpha);
-                console.log("beta: " + beta);
-            }
-            // debug end
-
             // Fail-Softのため
             if (cpuScore > rtnMaxScore) {
                 rtnMaxScore = cpuScore;
@@ -306,37 +273,19 @@ function negascout(playerHoles, cpuHoles, depth, isCpuTurn, alpha, beta, isAlpha
             }
 
             // ベータカット
-            if (cpuScore >= beta) {
-                if (cpuScore === debugScore || hoge && depth === debugDepth && !isAlphaBeta) console.log("beta cut");
-                break;
-            }
+            if (cpuScore >= beta) break;
 
             if (alpha < cpuScore) {
                 alpha = cpuScore;
                 if (i === 0) continue;
-                if (cpuScore === debugScore || hoge && depth === debugDepth && !isAlphaBeta) console.log("再探索 start: depth: " + (depth - 1) + " i: " + i);
                 cpuScore = negascout(cpyPlayerHoles, cpyCpuHoles, depth - 1, isCpuTurn, alpha, beta).score;
-                if (cpuScore === debugScore || hoge && depth === debugDepth && !isAlphaBeta) { 
-                    console.log("-----------------------");
-                    console.log("depth: " + (depth - 1)+ " i: " + i);
-                    console.log("isCpu: " + isCpuTurnDebug);
-                    console.log("playerHoles: " + cpyPlayerHoles.map(function(e) { return e.stoneCount; }).join(", "));
-                    console.log("cpuHolesHoles: " + cpyCpuHoles.map(function(e) { return e.stoneCount; }).join(", "));
-                    console.log("cpuScore: " + cpuScore);
-                    console.log("alpha: " + alpha);
-                    console.log("beta: " + beta);
-                }
-                if (cpuScore === debugScore || hoge && depth === debugDepth && !isAlphaBeta) console.log("再探索 end: depth: " + (depth - 1) + " i: " + i);
                 // Fail-Softのため
                 if (cpuScore > rtnMaxScore) {
                     rtnMaxScore = cpuScore;
                     selectHolesIndex = index;
                 }
                 // ベータカット
-                if (cpuScore >= beta) {
-                    if (cpuScore === debugScore || hoge && depth === debugDepth && !isAlphaBeta) console.log("beta cut");
-                    break;
-                }
+                if (cpuScore >= beta) break;
                 if (alpha < cpuScore) alpha = cpuScore;
             }
         }
@@ -359,19 +308,6 @@ function negascout(playerHoles, cpuHoles, depth, isCpuTurn, alpha, beta, isAlpha
                 cpuScore = negascout(cpyPlayerHoles, cpyCpuHoles, depth - 1, !isPlayerTurn, beta - 1, beta).score;
             }
 
-            // debug start
-            if (cpuScore === debugScore || hoge && depth === debugDepth && !isAlphaBeta) {
-                console.log("=======================");
-                console.log("depth: " + (depth - 1)+ " i: " + i);
-                console.log("isCpu: " + isCpuTurnDebug);
-                console.log("playerHoles: " + cpyPlayerHoles.map(function(e) { return e.stoneCount; }).join(", "));
-                console.log("cpuHolesHoles: " + cpyCpuHoles.map(function(e) { return e.stoneCount; }).join(", "));
-                console.log("cpuScore: " + cpuScore);
-                console.log("alpha: " + alpha);
-                console.log("beta: " + beta);
-            }
-            // debug end
-
             // Fail-Softのため
             if (cpuScore < rtnMinScore) {
                 rtnMinScore = cpuScore;
@@ -379,37 +315,19 @@ function negascout(playerHoles, cpuHoles, depth, isCpuTurn, alpha, beta, isAlpha
             }
 
             // アルファカット
-            if (cpuScore <= alpha) {
-                if (cpuScore === debugScore || hoge && depth === debugDepth && !isAlphaBeta) console.log("alpha cut");
-                break;
-            }
+            if (cpuScore <= alpha) break;
 
             if (beta > cpuScore) {
                 beta = cpuScore;
                 if (i === 0) continue;
-                if (cpuScore === debugScore || hoge && depth === debugDepth && !isAlphaBeta) console.log("再探索 start: depth: " + (depth - 1) + " i: " + i);
                 cpuScore = negascout(cpyPlayerHoles, cpyCpuHoles, depth - 1, !isPlayerTurn, alpha, beta).score;
-                if (cpuScore === debugScore || hoge && depth === debugDepth && !isAlphaBeta) { 
-                    console.log("-----------------------");
-                    console.log("depth: " + (depth - 1)+ " i: " + i);
-                    console.log("isCpu: " + isCpuTurnDebug);
-                    console.log("playerHoles: " + cpyPlayerHoles.map(function(e) { return e.stoneCount; }).join(", "));
-                    console.log("cpuHolesHoles: " + cpyCpuHoles.map(function(e) { return e.stoneCount; }).join(", "));
-                    console.log("cpuScore: " + cpuScore);
-                    console.log("alpha: " + alpha);
-                    console.log("beta: " + beta);
-                }
-                if (cpuScore === debugScore || hoge && depth === debugDepth && !isAlphaBeta) console.log("再探索 end: depth: " + (depth - 1) + " i: " + i);
                 // Fail-Softのため
                 if (cpuScore < rtnMinScore) {
                     rtnMinScore = cpuScore;
                     selectHolesIndex = index;
                 }
                 // アルファカット
-                if (cpuScore <= alpha) {
-                    if (cpuScore === debugScore || hoge && depth === debugDepth && !isAlphaBeta) console.log("alpha cut");
-                    break;
-                }
+                if (cpuScore <= alpha) break;
                 if (beta > cpuScore) beta = cpuScore;
             }
         }
