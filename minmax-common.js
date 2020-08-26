@@ -33,3 +33,41 @@ function getCpuScore(playerHoles, cpuHoles) {
     
     return subCpuScore * 2 - subPlayerScore;
 }
+
+// jObjはコピーしない
+function copyHoles(srcPlayerHoles, srcCpuHoles) {
+    const dstPlayerHoles = [];
+    const dstCpuHoles = [];
+
+    let prevDstHole = null;
+    for (let i = 0; i < srcPlayerHoles.length; i++) {
+        let srcHole = srcPlayerHoles[i];
+        let dstHole = new Hole(null, srcHole.stoneCount);
+        if (prevDstHole !== null) {
+            prevDstHole.nextHole = dstHole;
+        }
+        prevDstHole = dstHole;
+        dstPlayerHoles.push(dstHole);
+    }
+    
+    let dstPlayerStore = new Hole(null, 0, true);
+    prevDstHole.nextHole = dstPlayerStore;
+    prevDstHole = dstPlayerStore;
+
+    for (let i = 0; i < srcCpuHoles.length; i++) {
+        let srcHole = srcCpuHoles[i];
+        let dstHole = new Hole(null, srcHole.stoneCount);
+        prevDstHole.nextHole = dstHole;
+        prevDstHole = dstHole;
+        dstCpuHoles.push(dstHole);
+    }
+
+    let dstCpuStore = new Hole(null, 0, true);
+    prevDstHole.nextHole = dstCpuStore;
+    dstCpuStore.nextHole = dstPlayerHoles[0];
+
+    return {
+        playerHoles: dstPlayerHoles,
+        cpuHoles: dstCpuHoles
+    };
+}
