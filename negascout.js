@@ -35,14 +35,14 @@ function negascout(playerHoles, cpuHoles, depth, isCpuTurn, alpha, beta, isAlpha
     if (isCpuTurn) {
         let rtnMaxScore = MIN_SCORE;
         for (let i = 0; i < searchOrderIndexList.length; i++) {
-            let index = searchOrderIndexList[i];
+            const index = searchOrderIndexList[i];
             const holesList = copyHoles(playerHoles, cpuHoles);
             const cpyPlayerHoles = holesList.playerHoles;
             const cpyCpuHoles = holesList.cpuHoles;
 
             const isCpuTurn = stoneMove(cpyCpuHoles[index]);
             let cpuScore = 0;
-            if (i === 0) {
+            if (isAlphaBeta || i === 0) {
                 cpuScore = negascout(cpyPlayerHoles, cpyCpuHoles, depth - 1, isCpuTurn, alpha, beta).score;
             }
             else {
@@ -60,7 +60,7 @@ function negascout(playerHoles, cpuHoles, depth, isCpuTurn, alpha, beta, isAlpha
 
             if (alpha < cpuScore) {
                 alpha = cpuScore;
-                if (i === 0) continue;
+                if (isAlphaBeta || i === 0) continue;
                 cpuScore = negascout(cpyPlayerHoles, cpyCpuHoles, depth - 1, isCpuTurn, alpha, beta).score;
                 // Fail-Softのため
                 if (cpuScore > rtnMaxScore) {
@@ -77,14 +77,14 @@ function negascout(playerHoles, cpuHoles, depth, isCpuTurn, alpha, beta, isAlpha
     else {
         let rtnMinScore = MAX_SCORE;
         for (let i = 0; i < searchOrderIndexList.length; i++) {
-            let index = searchOrderIndexList[i];
+            const index = searchOrderIndexList[i];
             const holesList = copyHoles(playerHoles, cpuHoles);
             const cpyPlayerHoles = holesList.playerHoles;
             const cpyCpuHoles = holesList.cpuHoles;
 
             const isPlayerTurn = stoneMove(cpyPlayerHoles[index]);
             let cpuScore = 0;
-            if (i === 0) {
+            if (isAlphaBeta || i === 0) {
                 cpuScore = negascout(cpyPlayerHoles, cpyCpuHoles, depth - 1, !isPlayerTurn, alpha, beta).score;
             }
             else {
@@ -102,7 +102,7 @@ function negascout(playerHoles, cpuHoles, depth, isCpuTurn, alpha, beta, isAlpha
 
             if (beta > cpuScore) {
                 beta = cpuScore;
-                if (i === 0) continue;
+                if (isAlphaBeta || i === 0) continue;
                 cpuScore = negascout(cpyPlayerHoles, cpyCpuHoles, depth - 1, !isPlayerTurn, alpha, beta).score;
                 // Fail-Softのため
                 if (cpuScore < rtnMinScore) {
