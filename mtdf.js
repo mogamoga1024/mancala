@@ -1,6 +1,26 @@
 
-function mtdf() {
+function mtdf(playerHoles, cpuHoles, depth, f) {
+    if (f === undefined) f = 0;
 
+    let score = f;
+    let upperBound = MAX_SCORE;
+    let lowerBound = MIN_SCORE;
+    let beta = 0;
+    let bestSelectResult = null;
+
+    while (lowerBound < upperBound) {
+        if (score === lowerBound) beta = score + 1;
+        else beta = score;
+
+        // TODO 置換表付きアルファ・ベータ法にする。
+        bestSelectResult = alphabeta(playerHoles, cpuHoles, depth, true, beta - 1, beta);
+        score = bestSelectResult.score;
+
+        if (score < beta) upperBound = score;
+        else lowerBound = score;
+    }
+    
+    return bestSelectResult;
 }
 
 function alphabeta(playerHoles, cpuHoles, depth, isCpuTurn, alpha, beta) {
