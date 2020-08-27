@@ -168,7 +168,7 @@ test("計算結果のテスト", function() {
     strictEqual(getCpuScore(playerHoles, cpuHoles), 6);
 });
 
-module("minimaxのテスト", {
+module("negascoutのテスト", {
     setup: function() {
         mancalaInit();
     }
@@ -188,7 +188,7 @@ test("正常系", function() {
     cpuHoles[4].stoneCount = 1;
     cpuHoles[5].stoneCount = 0;
 
-    const selectHolesIndex = minimax(playerHoles, cpuHoles, 4, true).selectHolesIndex;
+    const selectHolesIndex = negascout(playerHoles, cpuHoles, 4, true, MIN_SCORE, MAX_SCORE).selectHolesIndex;
 
     notStrictEqual(selectHolesIndex, -1);
 });
@@ -207,7 +207,7 @@ test("負け確でもあきらめないフリをする", function() {
     cpuHoles[4].stoneCount = 0;
     cpuHoles[5].stoneCount = 3;
 
-    const selectHolesIndex = minimax(playerHoles, cpuHoles, 4, true).selectHolesIndex;
+    const selectHolesIndex = negascout(playerHoles, cpuHoles, 4, true, MIN_SCORE, MAX_SCORE).selectHolesIndex;
 
     strictEqual(selectHolesIndex, 5);
 });
@@ -226,7 +226,7 @@ test("負け確でもあきらめないフリをする", function() {
     cpuHoles[4].stoneCount = 3;
     cpuHoles[5].stoneCount = 0;
 
-    const selectHolesIndex = minimax(playerHoles, cpuHoles, 13, true).selectHolesIndex;
+    const selectHolesIndex = negascout(playerHoles, cpuHoles, 13, true, MIN_SCORE, MAX_SCORE).selectHolesIndex;
 
     strictEqual(selectHolesIndex, 4);
 });
@@ -245,7 +245,7 @@ test("正常系", function() {
     cpuHoles[4].stoneCount = 0;
     cpuHoles[5].stoneCount = 0;
 
-    const selectHolesIndex = minimax(playerHoles, cpuHoles, 12, true).selectHolesIndex;
+    const selectHolesIndex = negascout(playerHoles, cpuHoles, 12, true, MIN_SCORE, MAX_SCORE).selectHolesIndex;
 
     strictEqual(selectHolesIndex, 3);
 });
@@ -264,7 +264,7 @@ test("負けの確信テスト", function() {
     cpuHoles[4].stoneCount = 3;
     cpuHoles[5].stoneCount = 0;
 
-    let score = minimax(playerHoles, cpuHoles, 13, true).score;
+    let score = negascout(playerHoles, cpuHoles, 13, true, MIN_SCORE, MAX_SCORE).score;
     console.log(score);
     ok(MIN_SCORE < score && score < MIN_SCORE + 1);
 });
@@ -283,7 +283,7 @@ test("負けの確信テスト", function() {
     cpuHoles[4].stoneCount = 3;
     cpuHoles[5].stoneCount = 0;
 
-    let score = minimax(playerHoles, cpuHoles, 13, true).score;
+    let score = negascout(playerHoles, cpuHoles, 13, true, MIN_SCORE, MAX_SCORE).score;
     console.log(score);
     ok(MIN_SCORE < score && score < MIN_SCORE + 1);
 });
@@ -302,7 +302,7 @@ test("勝ちの確信テスト", function() {
     cpuHoles[4].stoneCount = 0;
     cpuHoles[5].stoneCount = 0;
 
-    let score = minimax(playerHoles, cpuHoles, 7, true).score;
+    let score = negascout(playerHoles, cpuHoles, 7, true, MIN_SCORE, MAX_SCORE, MIN_SCORE, MAX_SCORE).score;
     ok(MAX_SCORE - 1 < score && score < MAX_SCORE);
 });
 
@@ -320,10 +320,10 @@ test("勝ちの確信テスト", function() {
     cpuHoles[4].stoneCount = 1;
     cpuHoles[5].stoneCount = 1;
 
-    let score1 = minimax(playerHoles, cpuHoles, 10, true).score;
+    let score1 = negascout(playerHoles, cpuHoles, 10, true, MIN_SCORE, MAX_SCORE).score;
     ok(MAX_SCORE - 1 < score1 && score1 < MAX_SCORE);
 
-    let score2 = minimax(playerHoles, cpuHoles, 13, true).score;
+    let score2 = negascout(playerHoles, cpuHoles, 13, true, MIN_SCORE, MAX_SCORE).score;
     ok(MAX_SCORE - 1 < score2 && score2 < MAX_SCORE);
 });
 
