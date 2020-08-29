@@ -1,5 +1,5 @@
 
-function BestSelectResult(score, selectHolesIndex) {
+function BestSelect(score, selectHolesIndex) {
     this.score = score;
     this.selectHolesIndex = (selectHolesIndex !== undefined) ? selectHolesIndex : -1;
 }

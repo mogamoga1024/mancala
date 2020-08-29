@@ -6,16 +6,16 @@ function negascout(playerHoles, cpuHoles, depth, isCpuTurn, alpha, beta, isAlpha
     if (isWin(cpuHoles)) {
         //console.log("cpu win");
         // 勝利する手でも、ターンが少ない方が美しい。
-        return new BestSelectResult(MAX_SCORE - 1 / (depth + 2));
+        return new BestSelect(MAX_SCORE - 1 / (depth + 2));
     }
     if (isWin(playerHoles)) {
         //console.log("player win");
         // 敗北でも最後まで抗いたい。
-        return new BestSelectResult(MIN_SCORE + 1 / (depth + 2));
+        return new BestSelect(MIN_SCORE + 1 / (depth + 2));
     }
 
     if (depth === 0) {
-        return new BestSelectResult(getCpuScore(playerHoles, cpuHoles));
+        return new BestSelect(getCpuScore(playerHoles, cpuHoles));
     }
 
     let searchOrderIndexList = [];
@@ -72,7 +72,7 @@ function negascout(playerHoles, cpuHoles, depth, isCpuTurn, alpha, beta, isAlpha
                 if (alpha < cpuScore) alpha = cpuScore;
             }
         }
-        return new BestSelectResult(rtnMaxScore, selectHolesIndex);
+        return new BestSelect(rtnMaxScore, selectHolesIndex);
     }
     else {
         let rtnMinScore = MAX_SCORE;
@@ -114,7 +114,7 @@ function negascout(playerHoles, cpuHoles, depth, isCpuTurn, alpha, beta, isAlpha
                 if (beta > cpuScore) beta = cpuScore;
             }
         }
-        return new BestSelectResult(rtnMinScore, selectHolesIndex);
+        return new BestSelect(rtnMinScore, selectHolesIndex);
     }
 }
 
@@ -133,7 +133,7 @@ function searchOrderSort(playerHoles, cpuHoles, depth, isCpuTurn, alpha, beta) {
 
             const isCpuTurn = stoneMove(cpyCpuHoles[i]);
             const cpuScore = negascout(cpyPlayerHoles, cpyCpuHoles, depth - 1, isCpuTurn, alpha, beta, true).score;
-            selectionOrderList.push(new BestSelectResult(cpuScore, i));
+            selectionOrderList.push(new BestSelect(cpuScore, i));
         }
     }
     else {
@@ -148,7 +148,7 @@ function searchOrderSort(playerHoles, cpuHoles, depth, isCpuTurn, alpha, beta) {
 
             const isPlayerTurn = stoneMove(cpyPlayerHoles[i]);
             const cpuScore = negascout(cpyPlayerHoles, cpyCpuHoles, depth - 1, !isPlayerTurn, alpha, beta, true).score;
-            selectionOrderList.push(new BestSelectResult(cpuScore, i));
+            selectionOrderList.push(new BestSelect(cpuScore, i));
         }
     }
 

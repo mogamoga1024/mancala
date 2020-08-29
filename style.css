@@ -5,6 +5,19 @@
     font-family: meiryo;
 }
 
+.thinking-time {
+    position: fixed;
+    top: 0;
+    right: 10px;
+    font-size: 24px;
+    color: #000;
+    background-color: coral;
+    width: 200px;
+    height: 100px;
+    line-height: 100px;
+    text-align: right;
+}
+
 .wrapper {
     width: 880px;
     height: 300px;

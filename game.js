@@ -4,6 +4,8 @@ const $cpuHoles = $($(".cpu-holes > .hole").get().reverse());
 const $playerStore = $(".store > .hole").eq(1);
 const $cpuStore = $(".store > .hole").eq(0);
 const $message = $(".message");
+const $thinkingTime = $(".thinking-time");
+
 let canClick = true;
 const playerHoles = [];
 const cpuHoles = [];
@@ -161,9 +163,12 @@ function cpuPlay() {
 }
 
 function cpuThink() {
-    return minimax(playerHoles, cpuHoles, 13, true).selectHolesIndex;
+    const depth = 13; // 15 20
+    const start = performance.now();
+    //const index = negascout(playerHoles, cpuHoles, depth, true, MIN_SCORE, MAX_SCORE).selectHolesIndex;
+    const index = mtdf(playerHoles, cpuHoles, depth).selectHolesIndex;
+    const end = performance.now();
+    $thinkingTime.text(((end - start) / 100).toFixed(2));
+    return index;
 }
 
-function minimax(playerHoles, cpuHoles, depth, isCpuTurn) {
-    return negascout(playerHoles, cpuHoles, depth, isCpuTurn, MIN_SCORE, MAX_SCORE);
-}

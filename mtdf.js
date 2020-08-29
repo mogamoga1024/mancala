@@ -1,4 +1,6 @@
 
+const nodeScoreMemo = {};
+
 function mtdf(playerHoles, cpuHoles, depth, f) {
     if (f === undefined) f = 0;
 
@@ -6,38 +8,42 @@ function mtdf(playerHoles, cpuHoles, depth, f) {
     let upperBound = MAX_SCORE;
     let lowerBound = MIN_SCORE;
     let beta = 0;
-    let bestSelectResult = null;
+    let bestSelect = null;
 
     while (lowerBound < upperBound) {
         if (score === lowerBound) beta = score + 1;
         else beta = score;
 
-        // TODO 置換表付きアルファ・ベータ法にする。
-        bestSelectResult = alphabeta(playerHoles, cpuHoles, depth, true, beta - 1, beta);
-        score = bestSelectResult.score;
+        bestSelect = alphabetaWithMemory(playerHoles, cpuHoles, depth, true, beta - 1, beta);
+        score = bestSelect.score;
 
         if (score < beta) upperBound = score;
         else lowerBound = score;
     }
     
-    return bestSelectResult;
+    return bestSelect;
 }
 
-function alphabeta(playerHoles, cpuHoles, depth, isCpuTurn, alpha, beta) {
+function alphabetaWithMemory(playerHoles, cpuHoles, depth, isCpuTurn, alpha, beta) {
+
+    const key = nodeToStr(playerHoles, cpuHoles, depth, isCpuTurn);
+
+    if (key in nodeScoreMemo) return nodeScoreMemo[key];
 
     if (isWin(cpuHoles)) {
-        //console.log("cpu win");
         // 勝利する手でも、ターンが少ない方が美しい。
-        return new BestSelectResult(MAX_SCORE - 1 / (depth + 2));
+        nodeScoreMemo[key] = new BestSelect(MAX_SCORE - 1 / (depth + 2));
+        return nodeScoreMemo[key];
     }
     if (isWin(playerHoles)) {
-        //console.log("player win");
         // 敗北でも最後まで抗いたい。
-        return new BestSelectResult(MIN_SCORE + 1 / (depth + 2));
+        nodeScoreMemo[key] = new BestSelect(MIN_SCORE + 1 / (depth + 2));
+        return nodeScoreMemo[key];
     }
 
     if (depth === 0) {
-        return new BestSelectResult(getCpuScore(playerHoles, cpuHoles));
+        nodeScoreMemo[key] = new BestSelect(getCpuScore(playerHoles, cpuHoles));
+        return nodeScoreMemo[key];
     }
 
     let searchOrderIndexList = [];
@@ -63,7 +69,7 @@ function alphabeta(playerHoles, cpuHoles, depth, isCpuTurn, alpha, beta) {
             const cpyCpuHoles = holesList.cpuHoles;
 
             const isCpuTurn = stoneMove(cpyCpuHoles[index]);
-            const cpuScore = negascout(cpyPlayerHoles, cpyCpuHoles, depth - 1, isCpuTurn, alpha, beta).score;
+            const cpuScore = alphabetaWithMemory(cpyPlayerHoles, cpyCpuHoles, depth - 1, isCpuTurn, alpha, beta).score;
 
             // Fail-Softのため
             if (cpuScore > rtnMaxScore) {
@@ -76,7 +82,8 @@ function alphabeta(playerHoles, cpuHoles, depth, isCpuTurn, alpha, beta) {
 
             if (alpha < cpuScore) alpha = cpuScore;
         }
-        return new BestSelectResult(rtnMaxScore, selectHolesIndex);
+        nodeScoreMemo[key] = new BestSelect(rtnMaxScore, selectHolesIndex);
+        return nodeScoreMemo[key];
     }
     else {
         let rtnMinScore = MAX_SCORE;
@@ -87,7 +94,7 @@ function alphabeta(playerHoles, cpuHoles, depth, isCpuTurn, alpha, beta) {
             const cpyCpuHoles = holesList.cpuHoles;
 
             const isPlayerTurn = stoneMove(cpyPlayerHoles[index]);
-            let cpuScore = negascout(cpyPlayerHoles, cpyCpuHoles, depth - 1, !isPlayerTurn, alpha, beta).score;
+            let cpuScore = alphabetaWithMemory(cpyPlayerHoles, cpyCpuHoles, depth - 1, !isPlayerTurn, alpha, beta).score;
 
             // Fail-Softのため
             if (cpuScore < rtnMinScore) {
@@ -100,7 +107,13 @@ function alphabeta(playerHoles, cpuHoles, depth, isCpuTurn, alpha, beta) {
 
             if (beta > cpuScore) beta = cpuScore;
         }
-        return new BestSelectResult(rtnMinScore, selectHolesIndex);
+        nodeScoreMemo[key] = new BestSelect(rtnMinScore, selectHolesIndex);
+        return nodeScoreMemo[key];
     }
 }
 
+function nodeToStr(playerHoles, cpuHoles, depth, isCpuTurn) {
+    const strPlayerHoles = playerHoles.map(function(e) { return e.stoneCount; }).join(",");
+    const strCpuHoles = cpuHoles.map(function(e) { return e.stoneCount; }).join(",");
+    return strPlayerHoles + "#" + strCpuHoles + "#" + depth + "#" + isCpuTurn;
+}
