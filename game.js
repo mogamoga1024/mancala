@@ -120,7 +120,7 @@ function isWin(holes) {
     return true;
 }
 
-function cpuPlay() {
+async function cpuPlay() {
     console.log("==" + turn++ + "==");
     //*
     console.log("playerHoles[0].stoneCount: " + playerHoles[0].stoneCount);
@@ -136,7 +136,7 @@ function cpuPlay() {
     console.log("cpuHoles[4].stoneCount: " + cpuHoles[4].stoneCount);
     console.log("cpuHoles[5].stoneCount: " + cpuHoles[5].stoneCount);
     //*/
-    const index = cpuThink();
+    const index = await cpuThink();
     console.log("cpu: " + index);
 
     let hole = cpuHoles[index];
@@ -163,12 +163,14 @@ function cpuPlay() {
 }
 
 function cpuThink() {
-    const depth = 13; // 15 20
-    const start = performance.now();
-    //const index = negascout(playerHoles, cpuHoles, depth, true, MIN_SCORE, MAX_SCORE).selectHolesIndex;
-    const index = mtdf(playerHoles, cpuHoles, depth).selectHolesIndex;
-    const end = performance.now();
-    $thinkingTime.text(((end - start) / 100).toFixed(2));
-    return index;
+    return new Promise(resolve => {
+        const depth = 13;// 15 20
+        const start = performance.now();
+        //const index = negascout(playerHoles, cpuHoles, depth, true, MIN_SCORE, MAX_SCORE).selectHolesIndex;
+        const index = mtdf(playerHoles, cpuHoles, depth).selectHolesIndex;
+        const end = performance.now();
+        $thinkingTime.text(((end - start) / 100).toFixed(2));
+        resolve(index);
+    });
 }
 
